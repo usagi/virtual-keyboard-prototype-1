@@ -16,6 +16,15 @@ target_link_libraries(reciever ${CMAKE_THREAD_LIBS_INIT} ${Boost_SYSTEM_LIBRARY}
 add_executable(keyboard-writer keyboard-writer.cxx)
 target_link_libraries(keyboard-writer ${Boost_PROGRAM_OPTIONS_LIBRARY})
 
+add_executable(virtual-keyboard-tester virtual-keyboard-tester.cxx)
+target_link_libraries(virtual-keyboard-tester ${Boost_PROGRAM_OPTIONS_LIBRARY} -lsqlite3)
+
+add_custom_command(TARGET virtual-keyboard-tester POST_BUILD
+  COMMAND ${PROJECT_SOURCE_DIR}/virtual-keyboard.build.sh \"${PROJECT_SOURCE_DIR}\" \"${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/virtual-keyboard-tester.dir\" \"${CMAKE_CURRENT_BINARY_DIR}\"
+  DEPENDS virtual-keyboard.csv
+)
+
 install(TARGETS sender RUNTIME DESTINATION bin)
 install(TARGETS reciever RUNTIME DESTINATION bin)
 install(TARGETS keyboard-writer RUNTIME DESTINATION bin)
+install(TARGETS virtual-keyboard-tester RUNTIME DESTINATION bin)
