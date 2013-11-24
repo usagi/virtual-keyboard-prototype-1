@@ -18,7 +18,10 @@
 - Ninja, GNU make など cmake の対応するビルドツール
     - http://martine.github.io/ninja/
     - http://www.gnu.org/software/make/
-
+- g++-4.7, clang++-3.2 などの C++11 に対応したコンパイラー
+    - http://gcc.gnu.org/
+    - http://clang.llvm.org/
+    
 ## サンプルアプリの共通事項
 
 - 実行時オプション
