@@ -4,6 +4,13 @@
 
 # memo
 
+## サンプルアプリの共通事項
+
+- 実行時オプション
+    - -h : ヘルプを表示
+    - -v : バージョン情報を表示
+    - オプション無しで実行 : -h で確認できるデフォルトの値で実行
+    
 ## Key Usage ID
 
 - USB HID Usage Tables
@@ -11,3 +18,58 @@
 - USBキーボードのキーコード
     - http://www2d.biglobe.ne.jp/~msyk/keyboard/layout/usbkeycode.html
 
+## virtual-keyboard database
+
+- virtual-keyboard.xlsx
+    - データ編集用マスター
+    - このファイルからの自動ビルドは行われない
+    - 変更を加えた場合は.csvを出力する
+- virtual-keyboard.csv
+    - ビルドシステムによりvirtual-keyboard.sqlite3を生成するソースとなる
+- virtual-keyboard-data.csv
+    - ビルド途中でsqlite3にロードさせる為に元の.csvから必要なデータ部分だけを残して削ぎ落とした中間ファイル
+    - build/CMakeFiles/virtual-keyboard-tester.dir/virtual-keyboard-data.csvとして生成される
+- virtual-keyboard.sqlite3
+    - アプリケーションで使用する為のsqlite3データベース
+    - ビルドシステムによりvirtual-keyboard.csvから自動的に生成される
+    - testテーブルにキーボードデータが収められる
+    - 将来的には複数のキーボードデータを収めて使う
+
+## virtual-keyboard-tester
+
+仮想キーボードに対して指位置の入力（X座標、Y座標、S座標:ストローク深さ座標）を与える事で
+仮想キーボードデータベースにあるtestキーボードテーブルから、
+キーのヒット状態（＋人間が理解可能な文字列によるヒットしたキーの名称）を表示するサンプル。
+
+### 依存性
+
+- libboost-dev (program_options)
+    - http://www.boost.org/
+- libWRP-SQLite3
+    - http://blog.wonderrabbitproject.net/2013/05/libwrp-sqlite3-c-sqlite3-wrapper-library.html
+    - https://github.com/usagi/libWRP-SQLite3
+- libsqlite3-dev
+    - http://packages.debian.org/ja/squeeze/libsqlite3-dev
+
+## keyboard-writer
+
+システム（OS）に対して仮想キーボードデバイスを生成し、任意のキー入力をソフトウェアエミュレーションにより
+システムへ送出するサンプル。
+
+Linux（UNIX、ネイティブPOSIX系）と、その他のシステム（Windows、OSXも？）では
+異なる方法でシステムにキー入力を与える必要がある。
+現在はとりあえずLinux（Linux Mint 15 KDEで動作確認）のみに対応。
+
+### 依存性
+
+- libboost-dev (program_options)
+    - http://www.boost.org/
+    
+## sender/reciever
+
+UDP/IPによりデータを送信するサンプル、受信するサンプル。
+
+### 依存性
+
+- libboost-dev (program_options, asio)
+    - http://www.boost.org/
