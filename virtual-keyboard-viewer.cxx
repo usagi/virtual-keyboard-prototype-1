@@ -37,14 +37,14 @@ void view(const std::string& database, const std::string& table, const double sc
     const auto& y = std::get<1>(row);
     const auto& w = std::get<2>(row);
     const auto& h = std::get<3>(row);
-    const auto& s = std::get<4>(row);
+    //const auto& s = std::get<4>(row);
     const auto& id = std::get<5>(row);
     const auto left_top     = cv::Point(x, y) * scaling;
     const auto right_bottom = cv::Point(x + w, y + h) * scaling;
     const auto color        = cv::Scalar(0, 0, 255);
     cv::rectangle(image, left_top, right_bottom, color, 2, CV_AA);
     const auto text_position = cv::Point(x, y + h * .5) * scaling;
-    cv::putText(image, id_to_name(id), text_position, cv::FONT_HERSHEY_SIMPLEX, 0.25 * scaling, color, 1.4, CV_AA);
+    cv::putText(image, id_to_name(id), text_position, cv::FONT_HERSHEY_SIMPLEX, 0.25 * scaling, color, 1, CV_AA);
   }
   
   cv::namedWindow("virtual-keyboard-viewer", CV_WINDOW_AUTOSIZE|CV_WINDOW_FREERATIO);
