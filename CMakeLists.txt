@@ -2,7 +2,11 @@ cmake_minimum_required(VERSION 2.8)
 
 project(virtual-keyboard-prototype-1)
 
+set(CMAKE_CXX_COMPILER "clang++")
+
 add_definitions(-std=c++11)
+
+set(CMAKE_CXX_FLAGS "-Wall -pedantic-errors -Werror ${CMAKE_CXX_FLAGS}")
 
 find_package(Threads REQUIRED)
 find_package(Boost 1.49.0 REQUIRED system program_options)
