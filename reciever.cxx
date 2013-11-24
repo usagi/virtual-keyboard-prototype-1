@@ -1,6 +1,6 @@
 #include <iostream>
 #include <string>
-#include <array>
+#include <boost/array.hpp>
 #include <boost/asio.hpp>
 #include <boost/program_options.hpp>
 
@@ -17,7 +17,7 @@ void recieve(const int port)
   
   while(true)
   {
-    std::array<char, 2048> buffer;
+    boost::array<char, 2048> buffer;
     
     udp::endpoint endpoint;
     boost::system::error_code error;
