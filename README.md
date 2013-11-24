@@ -4,13 +4,28 @@
 
 # memo
 
+## build方法
+
+    mkdir build
+    cd build
+    cmake -G Ninja ..
+    ninja
+
+### 依存性
+
+- cmake
+    - http://www.cmake.org/
+- Ninja, GNU make など cmake の対応するビルドツール
+    - http://martine.github.io/ninja/
+    - http://www.gnu.org/software/make/
+
 ## サンプルアプリの共通事項
 
 - 実行時オプション
     - -h : ヘルプを表示
     - -v : バージョン情報を表示
     - オプション無しで実行 : -h で確認できるデフォルトの値で実行
-    
+
 ## Key Usage ID
 
 - USB HID Usage Tables
