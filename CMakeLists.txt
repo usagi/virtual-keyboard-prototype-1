@@ -2,6 +2,11 @@ cmake_minimum_required(VERSION 2.8)
 
 project(virtual-keyboard-prototype-1)
 
+find_program(SQLITE3 sqlite3)
+if(NOT SQLITE3)
+  message(FATAL_ERROR "sqlite3 is not found")
+endif()
+
 if(NOT CMAKE_CXX_COMPILER)
   set(CMAKE_CXX_COMPILER "clang++")
 endif()
