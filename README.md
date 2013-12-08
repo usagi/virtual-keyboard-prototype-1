@@ -11,6 +11,16 @@
     cmake -G Ninja ..
     ninja
 
+コンパイラーはデフォルトでclang++となります。
+もし、g++を使いたい場合には、cmakeの際に、
+
+    cmake -G Ninja -DCMAKE_CXX_COMPILER=g++ ..
+
+として下さい。
+
+なお、clang++の場合には3.2以上、
+g++の場合には4.7以上のバージョンを必要とします。
+
 ### 依存性
 
 - cmake
