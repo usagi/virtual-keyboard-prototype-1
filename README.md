@@ -31,7 +31,28 @@ g++の場合には4.7以上のバージョンを必要とします。
 - g++-4.7, clang++-3.2 などの C++11 に対応したコンパイラー
     - http://gcc.gnu.org/
     - http://clang.llvm.org/
-    
+
+## raspbianにおける必要パッケージ等の導入方法
+
+    apt-get install \
+      cmake \
+      g++-4.7 \
+      libboost-all-dev \
+      libopencv-dev \
+      sqlite3 \
+      libsqlite3-dev \
+
+ほかにraspbianにパッケージが無いため手作業でインストールが必要なものとして、
+
+- Ninja
+- libWRP-SQLite3
+
+以上があります。
+
+また、 raspbian では clang++-3.2 を執筆現在まだリポジトリーから入手できないので
+g++-4.7を用意し、cmake時に-DCMAKE_CXX_COMPILER=g++-4.7、
+またはalternativesを設定してあれば単に-DCMAKE_CXX_COMPILER=g++を指示する必要があります。
+
 ## サンプルアプリの共通事項
 
 - 実行時オプション
