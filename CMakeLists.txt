@@ -2,7 +2,21 @@ cmake_minimum_required(VERSION 2.8)
 
 project(virtual-keyboard-prototype-1)
 
-set(CMAKE_CXX_COMPILER "clang++")
+if(NOT CMAKE_CXX_COMPILER)
+  set(CMAKE_CXX_COMPILER "clang++")
+endif()
+
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+  if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "4.7")
+    message(FATAL_ERROR "Insufficient g++ version; require g++-4.7")
+  endif()
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+  if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "3.2")
+    message(FATAL_ERROR "Insufficient clang++ version; require clang++-3.2")
+  endif()
+else()
+  message(WARNING "Unexpected compiler: ${CMAKE_CXX_COMPILER_ID}")
+endif()
 
 add_definitions(-std=c++11)
 
