@@ -7,6 +7,16 @@ if(NOT SQLITE3)
   message(FATAL_ERROR "sqlite3 is not found")
 endif()
 
+find_path(SQLITE3_H sqlite3.h)
+if(NOT SQLITE3_H)
+  message(FATAL_ERROR "sqlite3.h is not found")
+endif()
+
+find_library(SQLITE3_LIB sqlite3)
+if(NOT SQLITE3_LIB)
+  message(FATAL_ERROR "libsqlite3 is not found")
+endif()
+
 if(NOT CMAKE_CXX_COMPILER)
   set(CMAKE_CXX_COMPILER "clang++")
 endif()
