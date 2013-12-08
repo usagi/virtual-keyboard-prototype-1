@@ -17,6 +17,17 @@ if(NOT SQLITE3_LIB)
   message(FATAL_ERROR "libsqlite3 is not found")
 endif()
 
+find_path(LIBWRPSQLITE3 WonderRabbitProject/SQLite3.hpp
+  PATHS
+    /lib/include
+    /usr/lib/include
+    /usr/local/lib/include
+    ~/opt/include
+)
+if(NOT LIBWRPSQLITE3)
+  message(FATAL_ERROR "libWRP-SQLite3 is not found")
+endif()
+
 if(NOT CMAKE_CXX_COMPILER)
   set(CMAKE_CXX_COMPILER "clang++")
 endif()
