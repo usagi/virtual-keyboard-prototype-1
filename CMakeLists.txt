@@ -48,6 +48,13 @@ add_definitions(-std=c++11)
 
 set(CMAKE_CXX_FLAGS "-Wall -pedantic-errors -Werror ${CMAKE_CXX_FLAGS}")
 
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE Release)
+endif(NOT CMAKE_BUILD_TYPE)
+
+set(CMAKE_CXX_FLAGS_RELEASE "-O3 -march=native")
+set(CMAKE_CXX_FLAGS_DEBUG   "-O0 -g")
+
 find_package(Threads REQUIRED)
 find_package(Boost 1.49.0 REQUIRED system program_options)
 find_package(OpenCV REQUIRED)
@@ -71,6 +78,9 @@ add_custom_command(TARGET virtual-keyboard-tester POST_BUILD
 
 add_executable(virtual-keyboard-viewer virtual-keyboard-viewer.cxx)
 target_link_libraries(virtual-keyboard-viewer ${Boost_PROGRAM_OPTIONS_LIBRARY} -lsqlite3 ${OpenCV_LIBS})
+
+add_executable(camera-preview camera-preview.cxx)
+target_link_libraries(camera-preview ${Boost_PROGRAM_OPTIONS_LIBRARY} ${OpenCV_LIBS})
 
 install(TARGETS sender RUNTIME DESTINATION bin)
 install(TARGETS reciever RUNTIME DESTINATION bin)
