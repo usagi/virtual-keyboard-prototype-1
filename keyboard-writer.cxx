@@ -124,7 +124,7 @@ protected:
   {
     if(fd >= 0)
     {
-      finalize_uinput_device();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+      finalize_uinput_device();
       close(fd);
     }
   }
@@ -169,7 +169,7 @@ void write_invoke(const int keycode, const int wait)
     << "invoke key press: keycode(" << keycode << ") " << std::endl;
   w(keycode);
 }
-                              
+
 boost::program_options::variables_map option(const int& ac, const char* const * const  av)
 {
   using namespace boost::program_options;

@@ -2,34 +2,38 @@ cmake_minimum_required(VERSION 2.8)
 
 project(virtual-keyboard-prototype-1)
 
-find_program(SQLITE3 sqlite3)
+find_program(SQLITE3 sqlite3 HINTS ~/opt/bin /opt/local/bin)
 if(NOT SQLITE3)
   message(FATAL_ERROR "sqlite3 is not found")
+else()
+  message(STATUS "sqlite3: ${SQLITE3}")
 endif()
 
-find_path(SQLITE3_H sqlite3.h)
+find_path(SQLITE3_H sqlite3.h HINTS ~/opt/include /opt/local/include)
 if(NOT SQLITE3_H)
   message(FATAL_ERROR "sqlite3.h is not found")
+else()
+  message(STATUS "sqlite3.h: ${SQLITE3_H}")
 endif()
 
-find_library(SQLITE3_LIB sqlite3)
+find_library(SQLITE3_LIB sqlite3 HINTS ~/opt/lib /opt/local/lib)
 if(NOT SQLITE3_LIB)
   message(FATAL_ERROR "libsqlite3 is not found")
+else()
+  message(STATUS "libsqlite3: ${SQLITE3_LIB}")
 endif()
 
 find_path(LIBWRPSQLITE3 WonderRabbitProject/SQLite3.hpp
   PATHS
-    /lib/include
-    /usr/lib/include
-    /usr/local/lib/include
     ~/opt/include
+    /usr/local/lib/include
+    /usr/lib/include
+    /lib/include
 )
 if(NOT LIBWRPSQLITE3)
   message(FATAL_ERROR "libWRP-SQLite3 is not found")
-endif()
-
-if(NOT CMAKE_CXX_COMPILER)
-  set(CMAKE_CXX_COMPILER "clang++")
+else()
+  message(STATUS "libWRP-SQLite3: ${LIBWRPSQLITE3}")
 endif()
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
@@ -69,7 +73,7 @@ add_executable(keyboard-writer keyboard-writer.cxx)
 target_link_libraries(keyboard-writer ${Boost_PROGRAM_OPTIONS_LIBRARY})
 
 add_executable(virtual-keyboard-tester virtual-keyboard-tester.cxx)
-target_link_libraries(virtual-keyboard-tester ${Boost_PROGRAM_OPTIONS_LIBRARY} -lsqlite3)
+target_link_libraries(virtual-keyboard-tester ${Boost_PROGRAM_OPTIONS_LIBRARY} ${SQLITE3_LIB})
 
 add_custom_command(TARGET virtual-keyboard-tester POST_BUILD
   COMMAND ${PROJECT_SOURCE_DIR}/virtual-keyboard.build.sh \"${PROJECT_SOURCE_DIR}\" \"${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/virtual-keyboard-tester.dir\" \"${CMAKE_CURRENT_BINARY_DIR}\"
@@ -77,13 +81,7 @@ add_custom_command(TARGET virtual-keyboard-tester POST_BUILD
 )
 
 add_executable(virtual-keyboard-viewer virtual-keyboard-viewer.cxx)
-target_link_libraries(virtual-keyboard-viewer ${Boost_PROGRAM_OPTIONS_LIBRARY} -lsqlite3 ${OpenCV_LIBS})
+target_link_libraries(virtual-keyboard-viewer ${Boost_PROGRAM_OPTIONS_LIBRARY} ${SQLITE3_LIB} ${OpenCV_LIBS})
 
 add_executable(camera-preview camera-preview.cxx)
 target_link_libraries(camera-preview ${Boost_PROGRAM_OPTIONS_LIBRARY} ${OpenCV_LIBS})
-
-install(TARGETS sender RUNTIME DESTINATION bin)
-install(TARGETS reciever RUNTIME DESTINATION bin)
-install(TARGETS keyboard-writer RUNTIME DESTINATION bin)
-install(TARGETS virtual-keyboard-tester RUNTIME DESTINATION bin)
-install(TARGETS virtual-keyboard-viewer RUNTIME DESTINATION bin)
