@@ -3,26 +3,36 @@
 #include <thread>
 #include <boost/program_options.hpp>
 
+#include <WonderRabbitProject/key.hxx>
+
 #if defined(_WIN64) || defined(_WIN32)
-#elif __APPLE__
-#elif defined(__linux) || defined(__unix) || defined(__posix)
+  //#include ????
+#elif defined(__APPLE__)
+  #include "/System/Library/Frameworks/CoreGraphics.framework/Versions/A/Headers/CGEvent.h"
+  #include "/System/Library/Frameworks/CoreGraphics.framework/Versions/A/Headers/CGEventSource.h"
+  #include "/System/Library/Frameworks/CoreGraphics.framework/Versions/A/Headers/CGEventTypes.h"
+  #include "/System/Library/Frameworks/CoreGraphics.framework/Versions/A/Headers/CGRemoteOperation.h"
+#elif defined(__linux)
   #include <fcntl.h>
-  //#include <linux/input.h>
-  #include <linux/uinput.h>
+#else
+  static_assert(false, "the system is not support");
 #endif
+
+namespace app
+{
 
 enum class os_target: unsigned
 { Unknown = 0x00
 , Windows
 , OSX
-, Linux_UNIX_POSIX
+, Linux
 };
 
 constexpr const char* to_string(const os_target a)
 {
   return
-    a == os_target::Linux_UNIX_POSIX
-    ? "Linux_UNIX_POSIX"
+    a == os_target::Linux
+    ? "Linux"
     : a == os_target::OSX
       ? "OSX"
       : a == os_target::Windows
@@ -34,17 +44,17 @@ constexpr const char* to_string(const os_target a)
 constexpr auto os_target_mode = 
 #if defined(_WIN64) || defined(_WIN32)
   os_target::Windows
-#elif __APPLE__
+#elif defined(__APPLE__)
   os_target::OSX
-#elif defined(__linux) || defined(__unix) || defined(__posix)
-  os_target::Linux_UNIX_POSIX
+#elif defined(__linux)
+  os_target::Linux
 #else
   os_target::Unknown
 #endif
   ;
 
-constexpr auto default_keycode     = KEY_A;
-constexpr auto default_wait_in_sec = 3;
+constexpr auto default_key_name          = "a";
+constexpr auto default_wait_in_sec       = 3;
 constexpr auto default_device_name       = "virtual-keyboard-prototype-1";
 constexpr auto default_device_vendor_id  = 0x0000;
 constexpr auto default_device_product_id = 0x0000;
@@ -55,25 +65,52 @@ constexpr auto version_info = "vertual-keyboard-prototype-1/keyboard-writer\n"
                               ;
 
 struct writer_base_t
-{ virtual void operator()(const int keycode) = 0; };
+{ virtual void operator()(const int code) = 0; };
 
-
-#if defined(_WIN64) || defined(_WIN32)
-#elif __APPLE__
-#elif defined(__linux) || defined(__unix) || defined(__posix)
 struct writer_t final
   : writer_base_t
 {
+#if defined(_WIN64) || defined(_WIN32)
+#elif __APPLE__
+  void operator()(const int code) override
+  {
+    if(!WonderRabbitProject::key::key_helper_t::instance().is_valid(code))
+      throw std::runtime_error("invalid key code");
+    
+    constexpr auto key_press_code   = true;
+    constexpr auto key_release_code = false;
+    
+    constexpr auto keycode = CGKeyCode(code);
+    
+    auto event_source = CGEventSourceCreate(kCGEventSourceStateHIDSystemState);
+    
+    auto key_press_event   = CGEventCreateKeyboardEvent(event_source, keycode, key_press_code);
+    auto key_release_event = CGEventCreateKeyboardEvent(event_source, keycode, key_release_code);
+    
+    //CGEventSetFlags(key_press_event, kCGEventFlagMaskShift);
+    //CGEventSetFlags(key_release_event, kCGEventFlagMaskShift);
+    
+    constexpr auto event_tap_location = kCGHIDEventTap;
+    
+    CGEventPost(event_tap_location, key_press_event);
+    CGEventPost(event_tap_location, key_release_event);
+    
+    CFRelease(key_press_event);
+    CFRelease(key_release_event);
+  }
+#elif defined(__linux) || defined(__unix) || defined(__posix)
   writer_t()
   { initialize(); }
   
   ~writer_t()
   { finalize(); }
   
-  void operator()(const int keycode) override
+  void operator()(const int code) override
   {
-    send_event(EV_KEY, keycode, 1);
-    send_event(EV_KEY, keycode, 0);
+    if(!WonderRabbitProject::key::key_helper_t::instance().is_valid(code))
+      throw std::runtime_error("invalid key code");
+    send_event(EV_KEY, code, 1);
+    send_event(EV_KEY, code, 0);
     send_event(EV_SYN, SYN_REPORT, 0);
   }
   
@@ -151,10 +188,10 @@ protected:
   }
   
   int fd;
-};
 #endif
+};
 
-void write_invoke(const int keycode, const int wait)
+void write_invoke(const int code, const int wait)
 {
   writer_t w;
   
@@ -165,9 +202,13 @@ void write_invoke(const int keycode, const int wait)
     std::this_thread::sleep_for(std::chrono::seconds(1));
   }
   
+  auto kh = WonderRabbitProject::key::key_helper_t::instance();
+  
   std::cout
-    << "invoke key press: keycode(" << keycode << ") " << std::endl;
-  w(keycode);
+    << "invoke key press: key = "
+    << kh.name(code)
+    << "(" << code << (kh.is_valid(code) ? "" : " [INVALID]") << ") " << std::endl;
+  w(code);
 }
 
 boost::program_options::variables_map option(const int& ac, const char* const * const  av)
@@ -177,8 +218,8 @@ boost::program_options::variables_map option(const int& ac, const char* const * 
   options_description description("オプション");
   description.add_options()
     ("help,h"   , "ヘルプ")
-    ("keycode,k", value<int>()->default_value(default_keycode)    , "キーコード")
-    ("wait,w"   , value<int>()->default_value(default_wait_in_sec), "キーイベント発生までのウェイト[秒]")
+    ("key,k"    , value<std::string>()->default_value(default_key_name), "キーの名前")
+    ("wait,w"   , value<int>()->default_value(default_wait_in_sec)     , "キーイベント発生までのウェイト[秒]")
     ("version,v", "バージョン情報")
     ;
   
@@ -197,11 +238,13 @@ boost::program_options::variables_map option(const int& ac, const char* const * 
   return vm;
 }
 
+}
+
 int main (const int ac, const char* const * const av) try
 {
-  auto vm = option(ac, av);
+  auto vm = app::option(ac, av);
   if(!vm.count("help") && !vm.count("version"))
-    write_invoke(vm["keycode"].as<int>(), vm["wait"].as<int>());
+    app::write_invoke(WonderRabbitProject::key::key_helper_t::instance().code(vm["key"].as<std::string>()), vm["wait"].as<int>());
 }
 catch (const std::exception& e)
 { std::cerr << e.what() << "\n"; }
