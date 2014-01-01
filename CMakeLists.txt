@@ -2,6 +2,11 @@ cmake_minimum_required(VERSION 2.8)
 
 project(virtual-keyboard-prototype-1)
 
+include_directories(
+  libWRP-SQLite3/include
+  libWRP-key/include
+)
+
 find_program(SQLITE3 sqlite3 HINTS ~/opt/bin /opt/local/bin)
 if(NOT SQLITE3)
   message(FATAL_ERROR "sqlite3 is not found")
@@ -23,8 +28,9 @@ else()
   message(STATUS "libsqlite3: ${SQLITE3_LIB}")
 endif()
 
-find_path(LIBWRPSQLITE3 WonderRabbitProject/SQLite3.hpp
+find_file(LIBWRPSQLITE3 WonderRabbitProject/SQLite3.hpp
   PATHS
+    libWRP-SQLite3/include
     ~/opt/include
     /usr/local/lib/include
     /usr/lib/include
@@ -34,6 +40,20 @@ if(NOT LIBWRPSQLITE3)
   message(FATAL_ERROR "libWRP-SQLite3 is not found")
 else()
   message(STATUS "libWRP-SQLite3: ${LIBWRPSQLITE3}")
+endif()
+
+find_file(LIBWRPKEY WonderRabbitProject/key.hxx
+  PATHS
+    libWRP-key/include
+    ~/opt/include
+    /usr/local/lib/include
+    /usr/lib/include
+    /lib/include
+)
+if(NOT LIBWRPKEY)
+  message(FATAL_ERROR "libWRP-key is not found")
+else()
+  message(STATUS "libWRP-key: ${LIBWRPKEY}")
 endif()
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
