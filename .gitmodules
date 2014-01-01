@@ -1,0 +1,6 @@
+[submodule "libWRP-key"]
+	path = libWRP-key
+	url = git@github.com:usagi/libWRP-key.git
+[submodule "libWRP-SQLite3"]
+	path = libWRP-SQLite3
+	url = git@github.com:usagi/libWRP-SQLite3.git
