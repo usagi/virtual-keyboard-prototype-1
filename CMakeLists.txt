@@ -56,6 +56,24 @@ else()
   message(STATUS "libWRP-key: ${LIBWRPKEY}")
 endif()
 
+if(APPLE)
+  find_file(OSX_CG_LIB CoreGraphics HINTS /System/Library/Frameworks/CoreGraphics.framework/Versions/A)
+
+  if(NOT OSX_CG_LIB)
+    message(FATAL "OSX CoreGraphics is not found")
+  else()
+    message(STATUS "OSX CoreGraphics: ${OSX_CG_LIB}")
+  endif()
+
+  find_file(OSX_CF_LIB CoreFoundation HINTS /System/Library/Frameworks/CoreFoundation.framework/Versions/A)
+
+  if(NOT OSX_CF_LIB)
+    message(FATAL "OSX CoreFoundation is not found")
+  else()
+    message(STATUS "OSX CoreFoundation: ${OSX_CF_LIB}")
+  endif()
+endif(APPLE)
+
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
   if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "4.7")
     message(FATAL_ERROR "Insufficient g++ version; require g++-4.7")
@@ -91,6 +109,9 @@ target_link_libraries(reciever ${CMAKE_THREAD_LIBS_INIT} ${Boost_SYSTEM_LIBRARY}
 
 add_executable(keyboard-writer keyboard-writer.cxx)
 target_link_libraries(keyboard-writer ${Boost_PROGRAM_OPTIONS_LIBRARY})
+if(APPLE)
+  target_link_libraries(keyboard-writer ${OSX_CG_LIB} ${OSX_CF_LIB})
+endif(APPLE)
 
 add_executable(virtual-keyboard-tester virtual-keyboard-tester.cxx)
 target_link_libraries(virtual-keyboard-tester ${Boost_PROGRAM_OPTIONS_LIBRARY} ${SQLITE3_LIB})
