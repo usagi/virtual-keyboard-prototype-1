@@ -80,7 +80,7 @@ struct writer_t final
     constexpr auto key_press_code   = true;
     constexpr auto key_release_code = false;
     
-    constexpr auto keycode = CGKeyCode(code);
+    const auto keycode = CGKeyCode(code);
     
     auto event_source = CGEventSourceCreate(kCGEventSourceStateHIDSystemState);
     
