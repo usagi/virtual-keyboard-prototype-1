@@ -88,7 +88,7 @@ endif()
 
 add_definitions(-std=c++11)
 
-set(CMAKE_CXX_FLAGS "-Wall -pedantic-errors -Werror ${CMAKE_CXX_FLAGS}")
+set(CMAKE_CXX_FLAGS "-Wall -pedantic-errors ${CMAKE_CXX_FLAGS}")
 
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
@@ -126,3 +126,6 @@ target_link_libraries(virtual-keyboard-viewer ${Boost_PROGRAM_OPTIONS_LIBRARY} $
 
 add_executable(camera-preview camera-preview.cxx)
 target_link_libraries(camera-preview ${Boost_PROGRAM_OPTIONS_LIBRARY} ${OpenCV_LIBS})
+
+add_executable(pixel-to-realspace pixel-to-realspace.cxx)
+target_link_libraries(pixel-to-realspace ${Boost_PROGRAM_OPTIONS_LIBRARY})
