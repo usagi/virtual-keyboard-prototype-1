@@ -83,9 +83,9 @@ void run
 
       if(show)
       {
-        cv::line(frame, {0, height * 0.5}, {width, height * 0.5}, {0, 0, 255});
-        cv::line(frame, {width * 0.5, 0}, {width * 0.5, height}, {0, 255, 0});
-        cv::line(frame, {width * 0.5, height * 0.5}, {width * 0.5, height * 0.5}, {255, 0, 0});
+        cv::line(frame, {0        , height / 2}, {width    , height / 2}, {0, 0, 255});
+        cv::line(frame, {width / 2, 0         }, {width / 2, height    }, {0, 255, 0});
+        cv::line(frame, {width / 2, height / 2}, {width / 2, height / 2}, {255, 0, 0});
         
         cv::imshow(info, frame);
       }
