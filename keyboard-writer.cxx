@@ -20,7 +20,7 @@
   static_assert(false, "the system is not support");
 #endif
 
-namespace app
+namespace
 {
 
   enum class os_target: unsigned
@@ -262,9 +262,9 @@ namespace app
 int main (const int ac, const char* const * const av) try
 {
 #if ! ( defined(_WIN64) || defined(_WIN32) )
-  auto vm = app::option(ac, av);
+  auto vm = option(ac, av);
   if(!vm.count("help") && !vm.count("version") && !vm.count("show-keys"))
-    app::write_invoke
+    write_invoke
     ( WonderRabbitProject::key::key_helper_t::instance().code(vm["key"].as<std::string>())
     , vm["wait"].as<int>()
     );
