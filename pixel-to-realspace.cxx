@@ -69,28 +69,28 @@ namespace
   , const a2d_t& front_image_target
   )
   {
-    std::cout << "top camera position x     [mm]: " << x(top_camera_position) << "\n"
-                 "                    y     [mm]: " << y(top_camera_position) << "\n"
-                 "                    z     [mm]: " << z(top_camera_position) << "\n"
-                 "front camera position x   [mm]: " << x(front_camera_position) << "\n"
-                 "                      y   [mm]: " << y(front_camera_position) << "\n"
-                 "                      z   [mm]: " << z(front_camera_position) << "\n"
+    std::cout << "top camera position x        [mm]: " << x(top_camera_position) << "\n"
+                 "                    y        [mm]: " << y(top_camera_position) << "\n"
+                 "                    z        [mm]: " << z(top_camera_position) << "\n"
+                 "front camera position x      [mm]: " << x(front_camera_position) << "\n"
+                 "                      y      [mm]: " << y(front_camera_position) << "\n"
+                 "                      z      [mm]: " << z(front_camera_position) << "\n"
               ;
     
     // std::tanなどの三角関数はラジアン単位の仕様なので弧度法単位から変換しておく
     // カメラのX軸回転角度[rad]
     auto top_camera_angle_x_rad = degrees_to_radians(top_camera_angle_x);
     
-    std::cout << "top camera angle x       [deg]: " << top_camera_angle_x     << "\n"
-                 "                         [rad]: " << top_camera_angle_x_rad << "\n"
+    std::cout << "top camera angle x          [deg]: " << top_camera_angle_x     << "\n"
+                 "                            [rad]: " << top_camera_angle_x_rad << "\n"
               ;
     
     // カメラのセンサーの対角線の長さ
     auto camera_sensor_diagonal = diagonal(x(camera_sensor_size), y(camera_sensor_size));
     
-    std::cout << "camera sensor width       [mm]: " << x(camera_sensor_size)  << "\n"
-                 "              height      [mm]: " << y(camera_sensor_size)  << "\n"
-                 "              diggonal    [mm]: " << camera_sensor_diagonal << "\n"
+    std::cout << "camera sensor width          [mm]: " << x(camera_sensor_size)  << "\n"
+                 "              height         [mm]: " << y(camera_sensor_size)  << "\n"
+                 "              diagonal       [mm]: " << camera_sensor_diagonal << "\n"
               ;
     
     // カメラの対角視野角[rad]
@@ -127,16 +127,6 @@ namespace
                  "       focal length          [mm]: " << camera_focal_length << "\n"
               ;
     
-    // 視錐台のZ軸方向の変化量に対するX軸Y軸方向の変化量（広がり）
-    a2d_t view_frustum_delta
-    {{ std::tan(x(camera_fov_div_2_rad))
-     , std::tan(y(camera_fov_div_2_rad))
-    }};
-    
-    std::cout << "view frustum dx/dz           [mm]: " << x(view_frustum_delta) << "\n"
-                 "             dy/dz           [mm]: " << y(view_frustum_delta) << "\n"
-              ;
-    
     // top-camのターゲットのピクセル値をsnorm値に
     //   ※snorm値: "signed normalized value"、日本語にすると符号付き正規化値
     //            : 具体的には [-1.0〜+1.0] の範囲に、ものの値を正規化（尺度を整える）した値
@@ -155,9 +145,14 @@ namespace
               ;
     // top-camのターゲットピクセルへの偏差角度
     //   ※top-camの視線中心からターゲットピクセルへは(左右,上下)に何度ずれた射線となるか
+    //   ※要注意として、ここで、カメラのスクリーンに映ったイメージは
+    //     カメラがZ軸-を向いて撮影したものだから、
+    //     カメラスクリーンのX軸+方向は現実世界のX軸+方向と逆転しています。
+    //     なので、このカメラのスクリーン座標系から現実世界への座標系への変換に伴い、
+    //     X軸の符号反転が発生します。
     a2d_t top_image_target_deviation_angle_rad
-    {{ x(top_image_target_snorm) * x(camera_fov_div_2_rad)
-     , y(top_image_target_snorm) * y(camera_fov_div_2_rad)
+    {{ -x(top_image_target_snorm) * x(camera_fov_div_2_rad)
+     ,  y(top_image_target_snorm) * y(camera_fov_div_2_rad)
     }};
     
     std::cout << "top image target dx         [rad]: " << x(top_image_target_deviation_angle_rad) << "\n"
@@ -261,21 +256,22 @@ namespace
     };
     
     // x = f(y)
-    // XY平面についてはまだ考えていないので、
+    // XZ平面についてはまだ考えていないので、
     // YZ平面の時と同様にして新たに算出する。
-    auto x_from_y = [&](const float_t y_value)
+    auto x_from_z = [&](const float_t z_value)
     {
       // 一次方程式の傾きaと切片bの標準形より
       // x = a * y + b
       //   a = dx/dy = tan(φ) ※φ（読み: ふぁい、θはさっきもう使ったから次の文字、というだけ）
       //   φ = x(top_image_target_line_angle)
-      const auto top_xy_a = std::tan(x(top_image_target_line_angle));
+      const auto top_xz_a = std::tan(x(top_image_target_line_angle));
       //   b = x - a * y
       //     top-cam の位置座標(x,y,z)より x と y を代入して
       //   b = x(top_camera_position) - top_xy_a * y(top_camera_position)
-      const auto top_xy_b = x(top_camera_position) - top_xy_a * y(top_camera_position);
+      const auto top_xz_b = x(top_camera_position) - top_xz_a * y(top_camera_position);
       // 以上、 x = f(y) における傾きaと切片bを求めたので x について解ける
-      return top_xy_a * y_value + top_xy_b;
+      std::cerr << "=======\n" << top_xz_a << "\n" << top_xz_b << "\n===========\n";
+      return top_xz_a * z_value + top_xz_b;
     };
     
     // 実空間の座標値(x,y,z)における y が定まり、
@@ -284,8 +280,8 @@ namespace
     // が与えられているので、
     // top-camとfront-camのターゲットピクセルの示す現実空間の完全な座標値が明らかとなる。
     const a3d_t cross_point
-    {{ x_from_y(cross_point_y)
-     , std::move(cross_point_y)
+    {{ x_from_z(z_from_y(cross_point_y))
+     , cross_point_y
      , z_from_y(cross_point_y)
     }};
     
