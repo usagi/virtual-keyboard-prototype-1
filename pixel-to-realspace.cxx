@@ -261,17 +261,17 @@ namespace
     auto x_from_z = [&](const float_t z_value)
     {
       // 一次方程式の傾きaと切片bの標準形より
-      // x = a * y + b
+      // x = a * z + b
       //   a = dx/dy = tan(φ) ※φ（読み: ふぁい、θはさっきもう使ったから次の文字、というだけ）
       //   φ = x(top_image_target_line_angle)
       const auto top_xz_a = std::tan(x(top_image_target_line_angle));
-      //   b = x - a * y
-      //     top-cam の位置座標(x,y,z)より x と y を代入して
-      //   b = x(top_camera_position) - top_xy_a * y(top_camera_position)
-      const auto top_xz_b = x(top_camera_position) - top_xz_a * y(top_camera_position);
-      // 以上、 x = f(y) における傾きaと切片bを求めたので x について解ける
+      //   b = x - a * z
+      //     top-cam の位置座標(x,y,z)より x と z を代入して
+      //   b = x(top_camera_position) - top_xy_a * z(top_camera_position)
+      const auto top_xz_b = x(top_camera_position) - top_xz_a * z(top_camera_position);
+      // 以上、 x = f(z) における傾きaと切片bを求めたので x について解ける
       std::cout << "top XZ-plane line function   [mm]: x = f(y) = "
-                << top_xz_a << " * y + " << top_xz_b << "\n";
+                << top_xz_a << " * z + " << top_xz_b << "\n";
       return top_xz_a * z_value + top_xz_b;
     };
     
