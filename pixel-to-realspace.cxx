@@ -271,7 +271,7 @@ namespace
       const auto top_xz_b = x(top_camera_position) - top_xz_a * y(top_camera_position);
       // 以上、 x = f(y) における傾きaと切片bを求めたので x について解ける
       std::cout << "top XY-plane line function   [mm]: x = f(y) = "
-                << top_xz_a << " * y + " << top_xz_b << "\n"
+                << top_xz_a << " * y + " << top_xz_b << "\n";
       return top_xz_a * z_value + top_xz_b;
     };
     
