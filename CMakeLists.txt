@@ -129,3 +129,5 @@ target_link_libraries(camera-preview ${Boost_PROGRAM_OPTIONS_LIBRARY} ${OpenCV_L
 
 add_executable(pixel-to-realspace pixel-to-realspace.cxx)
 target_link_libraries(pixel-to-realspace ${Boost_PROGRAM_OPTIONS_LIBRARY})
+
+add_subdirectory(finger-position)
