@@ -155,7 +155,7 @@ namespace
   , const std::string& filename_v = "hist_v.txt"
   )
   {
-    const std::array<std::string, 3> filenames{filename_h, filename_s, filename_v};
+    const std::array<std::string, 3> filenames{{filename_h, filename_s, filename_v}};
     for(size_t n = 0; n < hsv_hist.size(); ++n)
     {
       std::ofstream f(filenames[n]);
