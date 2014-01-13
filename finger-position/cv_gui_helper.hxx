@@ -90,7 +90,7 @@ namespace
       const auto& window = windows.at(int(window_id));
       const auto& window_name = window.name;
       const auto& trackbar_name = window.trackbars.at(int(trackbar_id)).name;
-      return make_tuple(trackbar_name, window_name);
+      return std::tuple<const std::string&, const std::string&>(trackbar_name, window_name);
     }
     
     template<class T>
