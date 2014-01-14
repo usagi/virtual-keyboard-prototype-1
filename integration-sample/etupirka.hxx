@@ -24,10 +24,26 @@ namespace arisin
     // Etupirka 主制御クラス
     class etupirka_t final
     {
-      camera_capture_t 
+      void initialize(const mode_t);
+      void run_main();
+      void run_reciever();
+      
+      mode_t mode_;
+      bool   is_running_;
+      
+      std::shared_ptr<camera_capture_t>   camera_capture;
+      std::shared_ptr<finger_detector_t>  finger_detector;
+      std::shared_ptr<space_converter_t>  space_converter;
+      std::shared_ptr<virtual_keyboard_t> virtual_keyboard;
+      std::shared_ptr<udp_sender_t>       udp_sender;
+      std::shared_ptr<udp_reciever_t>     udp_reciever;
+      std::shared_ptr<key_invoker_t>      key_invoker;
+      
     public:
       explicit etupirka_t(const mode_t);
       void run();
+      mode_t mode() const;
+      bool   is_running() const;
     };
   }
 }
