@@ -9,7 +9,7 @@ namespace arisin
       , database_(database__)
       , table_(table__)
     {
-      L(INFO, "ctor: database(" << database__ << ") table(" << table__ << ")");
+      L(INFO, "database(" << database__ << ") table(" << table__ << ")");
     }
     
     void virtual_keyboard_t::reset()
