@@ -18,7 +18,7 @@ namespace arisin
           is_initialized = true;
         }
 #endif
-        L(INFO, "etupirika logger initialized");
+        L(INFO, "etupirka logger initialized");
       }
     }
   }
