@@ -2,7 +2,6 @@
 
 #include <stdexcept>
 
-#include "logger.hxx"
 #include "commandline_helper.hxx"
 #include "camera-capture.hxx"
 #include "finger-detector.hxx"
@@ -11,6 +10,7 @@
 #include "udp-sender.hxx"
 #include "udp-reciever.hxx"
 #include "key-invoker.hxx"
+#include "logger.hxx"
 
 // created by arisin: https://github.com/arisin
 namespace arisin
