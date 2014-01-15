@@ -2,6 +2,7 @@
 
 #include <stdexcept>
 
+#include "configuration.hxx"
 #include "commandline_helper.hxx"
 #include "camera-capture.hxx"
 #include "finger-detector.hxx"
@@ -18,9 +19,6 @@ namespace arisin
   // the Etupirka project
   namespace etupirka
   {
-    // 実行モード
-    enum class mode_t;
-    
     // Etupirka 主制御クラス
     class etupirka_t final
     {
@@ -40,7 +38,7 @@ namespace arisin
       std::shared_ptr<key_invoker_t>      key_invoker;
       
     public:
-      explicit etupirka_t(const mode_t);
+      explicit etupirka_t(const configuration_t& conf);
       void run();
       mode_t mode() const;
       bool   is_running() const;
