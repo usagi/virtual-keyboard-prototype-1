@@ -10,6 +10,15 @@ namespace arisin
       , table_(conf.virtual_keyboard.table)
     {
       L(INFO, "database(" << database_ << ") table(" << table_ << ")");
+      
+      load_x_shift();
+    }
+    
+    void virtual_keyboard_t::load_x_shift()
+    {
+      const auto sql = std::string("select max(x+w) from ") + table();
+      L(INFO, "SQL: " << sql);
+      x_shift_ = - std::get<0>(database_object.execute_data<double>(sql)[0]) / 2.;
     }
     
     void virtual_keyboard_t::reset()
@@ -18,9 +27,11 @@ namespace arisin
     void virtual_keyboard_t::add_test(const int x, const int y, const int stroke)
     {
       L(INFO, "x(" << x << ") y(" << y << ") stroke(" << stroke << ")");
-
+      
+      const auto x_shifted = x + x_shift_;
+      
       auto sql_where = std::string(" where")
-        + " x <= " + std::to_string(x) + " and x + w >= " + std::to_string(x)
+        + " x <= " + std::to_string(x_shifted) + " and x + w >= " + std::to_string(x_shifted)
         + " and"
         + " y <= " + std::to_string(y) + " and y + h >= " + std::to_string(y)
         + " and"

@@ -20,9 +20,11 @@ namespace arisin
       std::string database_;
       std::string table_;
       pressing_keys_t pressing_keys_;
+      double x_shift_;
       
     public:
       explicit virtual_keyboard_t(const configuration_t& conf);
+      void load_x_shift();
       void reset();
       void add_test(const int x, const int y, const int stroke);
       const pressing_keys_t& pressing_keys() const;
