@@ -16,8 +16,6 @@ namespace arisin
     
     struct configuration_t
     {
-      mode_t mode;
-      
       struct camera_capture_configuration_t
       {
         int top_camera_id;
