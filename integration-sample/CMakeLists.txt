@@ -34,7 +34,7 @@ add_executable(etupirka
 )
 
 add_custom_command(TARGET etupirka POST_BUILD
-  COMMAND ${PROJECT_SOURCE_DIR}/virtual-keyboard.build.sh \"${PROJECT_SOURCE_DIR}\" \"${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/virtual-keyboard-tester.dir\" \"${CMAKE_CURRENT_BINARY_DIR}\"
+  COMMAND ${PROJECT_SOURCE_DIR}/virtual-keyboard.build.sh \"${PROJECT_SOURCE_DIR}\" \"${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/etupirka.dir\" \"${CMAKE_CURRENT_BINARY_DIR}\"
   DEPENDS ${PROJECT_SOURCE_DIR}/virtual-keyboard.csv
 )
 
