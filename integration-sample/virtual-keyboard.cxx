@@ -8,6 +8,15 @@ namespace arisin
       : database_object(conf.virtual_keyboard.database)
       , database_(conf.virtual_keyboard.database)
       , table_(conf.virtual_keyboard.table)
+      , statement(database_object.prepare
+        ( "select id"
+          " from " + conf.virtual_keyboard.table +
+          " where"
+          " x <= ? and x + w >= ?"
+          " y <= ? and y + h >= ?"
+          " s <= ?"
+        )
+      )
     {
       L(INFO, "database(" << database_ << ") table(" << table_ << ")");
       
@@ -29,18 +38,16 @@ namespace arisin
       L(INFO, "x(" << x << ") y(" << y << ") stroke(" << stroke << ")");
       
       const auto x_shifted = x + x_shift_;
+      L(INFO, "x_shifted: " << x_shifted);
       
-      auto sql_where = std::string(" where")
-        + " x <= " + std::to_string(x_shifted) + " and x + w >= " + std::to_string(x_shifted)
-        + " and"
-        + " y <= " + std::to_string(y) + " and y + h >= " + std::to_string(y)
-        + " and"
-        + " s <= " + std::to_string(stroke)
-        ;
-      auto sql = std::string("select id from ") + table() + sql_where;
-      L(INFO, "SQL: " << sql);
+      statement.reset()
+               .bind(x_shifted, 1)
+               .bind(x_shifted, 2)
+               .bind(y        , 3)
+               .bind(y        , 4)
+               .bind(stroke   , 5)
+               ;
       
-      auto statement = database_object.prepare(sql);
       auto results = statement.data<int32_t>();
       
       for (const auto& row: results)

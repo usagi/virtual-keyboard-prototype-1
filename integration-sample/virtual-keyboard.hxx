@@ -21,6 +21,7 @@ namespace arisin
       std::string table_;
       pressing_keys_t pressing_keys_;
       double x_shift_;
+      WonderRabbitProject::SQLite3::prepare_t statement;
       
     public:
       explicit virtual_keyboard_t(const configuration_t& conf);
