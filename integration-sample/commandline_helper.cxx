@@ -13,7 +13,6 @@ namespace arisin
       
       configuration_t conf;
       
-      // ToDo: @arisin が実装: arguments から conf を適切に設定する
       L(FATAL, "NOT IMPLEMENTED");
       
       return conf;
