@@ -18,15 +18,14 @@ namespace arisin
       L(INFO, "socket opened");
     }
     
-    void udp_sender_t::operator()(const std::string& message) const
+    void udp_sender_t::operator()(const key_signal_t& key_signal)
     {
-      L(INFO, "message: " << message);
+      L(INFO, "key_signal code, state: " << key_signal.code_state.code << "," << key_signal.code_state.state);
 #ifndef NDEBUG
-      //auto n =
+      auto n =
 #endif
-      // ToDo: ????
-      //socket.send_to(boost::asio::buffer(message), endpoint);
-      //L(INFO, "message sent [bytes]: " << n);
+      socket.send_to(boost::asio::buffer(key_signal.char_array), endpoint);
+      L(INFO, "message sent [bytes]: " << n);
     }
     
     const std::string& udp_sender_t::address() const

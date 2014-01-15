@@ -85,6 +85,20 @@ namespace arisin
       } key_invoker;
     };
     
+    union key_signal_t
+    {
+      struct code_state_t
+      {
+        uint32_t code;
+        uint8_t  state;
+      } code_state;
+      
+      std::array<char, sizeof(code_state_t)> char_array;
+      
+      explicit key_signal_t(decltype(code_state_t::code) code_ = -1, decltype(code_state_t::state) state_ = -1)
+        : code_state({code_, uint8_t(state_)})
+      { }
+    };
     
   }
 }

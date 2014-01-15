@@ -19,7 +19,7 @@ namespace arisin
       int port_;
     public:
       udp_reciever_t(const configuration_t& conf);
-      std::string operator()();
+      key_signal_t operator()();
       const int port() const;
     };
   }

@@ -28,7 +28,7 @@ namespace arisin
       
     public:
       udp_sender_t(const configuration_t& conf);
-      void operator()(const std::string& message) const;
+      void operator()(const key_signal_t& key_signal);
       const std::string& address() const;
       const int port() const;
     };

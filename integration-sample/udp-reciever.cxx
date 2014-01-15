@@ -12,24 +12,28 @@ namespace arisin
       L(INFO, "port(" << port_ << ")" );
     }
     
-    std::string udp_reciever_t::operator()()
+    key_signal_t udp_reciever_t::operator()()
     {
       using boost::asio::ip::udp;
       
-      boost::array<char, 4096>  buffer;
-      udp::endpoint             endpoint;
+      //boost::array<char, 8> buffer;
+      key_signal_t          key_signal;
+      udp::endpoint         endpoint;
       boost::system::error_code error;
       
-      auto len = socket.receive_from(boost::asio::buffer(buffer), endpoint, 0, error);
+      //auto len = socket.receive_from(boost::asio::buffer(buffer), endpoint, 0, error);
+      auto len = socket.receive_from(boost::asio::buffer(key_signal.char_array), endpoint, 0, error);
       
       L(INFO, "result of socket.recieve_from: len(" << len << ") endpoint(" << endpoint.address().to_string() << ") error(" << error << ")");
       
       if(error && error != boost::asio::error::message_size)
         throw boost::system::system_error(error);
       
-      L(INFO, "recieve message" << std::string(buffer.data(), buffer.data()));
+      //L(INFO, "recieve message" << std::string(buffer.data(), buffer.data()));
+      L(INFO, "recieve key_signal code state: " << key_signal.code_state.code << ", " << key_signal.code_state.state);
       
-      return { reinterpret_cast<const char*>(buffer.data()), size_t(len) };
+      //return { reinterpret_cast<const char*>(buffer.data()), size_t(len) };
+      return std::move(key_signal);
     }
     
     const int udp_reciever_t::port() const
