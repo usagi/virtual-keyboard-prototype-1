@@ -26,7 +26,7 @@ namespace arisin
       explicit virtual_keyboard_t(const configuration_t& conf);
       void load_x_shift();
       void reset();
-      void add_test(const int x, const int y, const int stroke);
+      void add_test(const double x, const double y, const double stroke);
       const pressing_keys_t& pressing_keys() const;
       const std::string& database() const;
       const std::string& table() const;

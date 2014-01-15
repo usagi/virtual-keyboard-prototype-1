@@ -24,7 +24,7 @@ namespace arisin
     void virtual_keyboard_t::reset()
     { pressing_keys_.clear(); }
     
-    void virtual_keyboard_t::add_test(const int x, const int y, const int stroke)
+    void virtual_keyboard_t::add_test(const double x, const double y, const double stroke)
     {
       L(INFO, "x(" << x << ") y(" << y << ") stroke(" << stroke << ")");
       
