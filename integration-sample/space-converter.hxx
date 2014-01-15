@@ -6,6 +6,7 @@
 #include <memory>
 #include <typeinfo>
 #include <boost/math/constants/constants.hpp>
+#include "configuration.hxx"
 #include "logger.hxx"
 
 namespace arisin
@@ -62,14 +63,7 @@ namespace arisin
       float_t top_camera_angle_x_rad_;
       
     public:
-      space_converter_t
-      ( const a3d_t& top_camera_position__
-      , const a3d_t& front_camera_position__
-      , const float_t top_camera_angle_x_deg__
-      , const float_t camera_fov_diagonal_deg__
-      , const a2d_t& camera_sensor_size__
-      , const a2d_t& image_size__
-      );
+      space_converter_t( const configuration_t& conf);
       
       void initialize();
       

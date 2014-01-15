@@ -5,6 +5,7 @@
 #include <boost/asio.hpp>
 #include <boost/program_options.hpp>
 
+#include "configuration.hxx"
 #include "logger.hxx"
 
 namespace arisin
@@ -26,7 +27,7 @@ namespace arisin
       int port_;
       
     public:
-      udp_sender_t(const std::string& address__ = "localhost", const int port = 30000);
+      udp_sender_t(const configuration_t& conf);
       void operator()(const std::string& message) const;
       const std::string& address() const;
       const int port() const;

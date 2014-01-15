@@ -4,27 +4,20 @@ namespace arisin
 {
   namespace etupirka
   {
-    space_converter_t::space_converter_t
-    ( const a3d_t& top_camera_position__
-    , const a3d_t& front_camera_position__
-    , const float_t top_camera_angle_x__
-    , const float_t camera_fov_diagonal__
-    , const a2d_t& camera_sensor_size__
-    , const a2d_t& image_size__
-    )
-      : top_camera_position_(top_camera_position__)
-      , front_camera_position_(front_camera_position__)
-      , top_camera_angle_x_(top_camera_angle_x__)
-      , camera_fov_diagonal_(camera_fov_diagonal__)
-      , camera_sensor_size_(camera_sensor_size__)
-      , image_size_(image_size__)
+    space_converter_t::space_converter_t(const configuration_t& conf)
+      : top_camera_position_(conf.space_converter.top_camera_position)
+      , front_camera_position_(conf.space_converter.front_camera_position)
+      , top_camera_angle_x_(conf.space_converter.top_camera_angle_x)
+      , camera_fov_diagonal_(conf.space_converter.camera_fov_diagonal)
+      , camera_sensor_size_(conf.space_converter.camera_sensor_size)
+      , image_size_(conf.space_converter.image_size)
     {
-      L(INFO, "top_camera_positon[mm]: "    << to_string(top_camera_position__));
-      L(INFO, "front_camera_position[mm]: " << to_string(front_camera_position__));
-      L(INFO, "top_camera_angle_x[deg]: "    << top_camera_angle_x__);
-      L(INFO, "camera_fov_diagonal[deg]: "   << camera_fov_diagonal__);
-      L(INFO, "camera_sensor_size[mm]: "    << to_string(camera_sensor_size__));
-      L(INFO, "image_size[mm]: "            << to_string(image_size__));
+      L(INFO, "top_camera_positon[mm]: "    << to_string(top_camera_position_));
+      L(INFO, "front_camera_position[mm]: " << to_string(front_camera_position_));
+      L(INFO, "top_camera_angle_x[deg]: "    << top_camera_angle_x_);
+      L(INFO, "camera_fov_diagonal[deg]: "   << camera_fov_diagonal_);
+      L(INFO, "camera_sensor_size[mm]: "    << to_string(camera_sensor_size_));
+      L(INFO, "image_size[mm]: "            << to_string(image_size_));
       
       initialize();
     }

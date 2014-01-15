@@ -4,6 +4,10 @@ namespace arisin
 {
   namespace etupirka
   {
+    key_invoker_t::key_invoker_t(const configuration_t& conf)
+    {
+    }
+    
     key_invoker_t::~key_invoker_t()
     {
       for(auto key : pressing_keys)

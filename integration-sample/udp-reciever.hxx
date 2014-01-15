@@ -5,6 +5,7 @@
 #include <boost/array.hpp>
 #include <boost/asio.hpp>
 
+#include "configuration.hxx"
 #include "logger.hxx"
 
 namespace arisin
@@ -17,7 +18,7 @@ namespace arisin
       boost::asio::ip::udp::socket socket;
       int port_;
     public:
-      udp_reciever_t(const int port__);
+      udp_reciever_t(const configuration_t& conf);
       std::string operator()();
       const int port() const;
     };

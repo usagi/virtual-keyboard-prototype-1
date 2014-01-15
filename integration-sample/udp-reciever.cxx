@@ -4,12 +4,12 @@ namespace arisin
 {
   namespace etupirka
   {
-    udp_reciever_t::udp_reciever_t(const int port__)
-      : socket(io_service, boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(), port__))
-      , port_(port__)
+    udp_reciever_t::udp_reciever_t(const configuration_t& conf)
+      : socket(io_service, boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(), conf.udp_sender.port))
+      , port_(conf.udp_sender.port)
     {
       L(INFO, "socket is initialized");
-      L(INFO, "port(" << port__ << ")" );
+      L(INFO, "port(" << port_ << ")" );
     }
     
     std::string udp_reciever_t::operator()()

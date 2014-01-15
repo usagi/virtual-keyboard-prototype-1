@@ -24,7 +24,7 @@ namespace arisin
           int front_camera_id;
           int width;
           int height;
-        } camera_capture_configuration;
+        } camera_capture;
         
         struct finger_detector_configuration_t
         {
@@ -45,7 +45,8 @@ namespace arisin
           double circles_param_2;
           int circles_min_radius;
           int circles_max_radius;
-        } finger_detector_configuration_for_top, finger_detector_configuration_for_front;
+        } finger_detector_top
+        , finger_detector_front;
         
         struct space_converter_configuration_t
         {
@@ -59,29 +60,29 @@ namespace arisin
           float_t camera_fov_diagonal;
           a2d_t camera_sensor_size;
           a2d_t image_size;
-        } space_converter_configuration;
+        } space_converter;
         
         struct virtual_keyboard_configuration_t
         {
           std::string database;
           std::string table;
-        } virtual_keyboard_configuration;
+        } virtual_keyboard;
         
         struct udp_sender_configuration_t
         {
           std::string address;
           int port;
-        } udp_sender_configuration;
+        } udp_sender;
         
         struct udp_reciver_configuration_t
         {
           int port;
-        } udp_reciver_configuration;
+        } udp_reciver;
         
         struct key_invoker_configuration_t
         {
           
-        } key_invoker_configuration;
+        } key_invoker;
       };
   }
 }

@@ -4,26 +4,26 @@ namespace arisin
 {
   namespace etupirka
   {
-    camera_capture_t::camera_capture_t(int top_camera_id__, int front_camera_id__, int width__, int height__)
-      : top_camera_id_(top_camera_id__)
-      , front_camera_id_(front_camera_id__)
-      , width_(width__)
-      , height_(height__)
+    camera_capture_t::camera_capture_t(const configuration_t& conf)
+      : top_camera_id_(conf.camera_capture.top_camera_id)
+      , front_camera_id_(conf.camera_capture.front_camera_id)
+      , width_(conf.camera_capture.width)
+      , height_(conf.camera_capture.height)
     {
-      L(INFO, "top-cam-id(" << top_camera_id__ << ") front-cam-id(" << front_camera_id__ << ") width(" << width__ << ") height(" << height__ << ")");
+      L(INFO, "top-cam-id(" << top_camera_id_ << ") front-cam-id(" << front_camera_id_ << ") width(" << width_ << ") height(" << height_ << ")");
       
-      captures[top].set(CV_CAP_PROP_FRAME_HEIGHT, height__);
-      captures[top].set(CV_CAP_PROP_FRAME_WIDTH , width__ );
+      captures[top].set(CV_CAP_PROP_FRAME_HEIGHT, height_);
+      captures[top].set(CV_CAP_PROP_FRAME_WIDTH , width_);
       L(INFO, "top-cam set height and width");
       
-      captures[front].set(CV_CAP_PROP_FRAME_HEIGHT, height__);
-      captures[front].set(CV_CAP_PROP_FRAME_WIDTH , width__ );
+      captures[front].set(CV_CAP_PROP_FRAME_HEIGHT, height_);
+      captures[front].set(CV_CAP_PROP_FRAME_WIDTH , width_);
       L(INFO, "front-cam set height and width");
       
-      captures[top].open(top_camera_id__);
+      captures[top].open(top_camera_id_);
       L(INFO, "top-cam opened");
       
-      captures[front].open(front_camera_id__);
+      captures[front].open(front_camera_id_);
       L(INFO, "front-cam opened");
     }
     

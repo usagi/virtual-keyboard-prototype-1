@@ -4,16 +4,16 @@ namespace arisin
 {
   namespace etupirka
   {
-    udp_sender_t::udp_sender_t(const std::string& address__, const int port__)
+    udp_sender_t::udp_sender_t(const configuration_t& conf)
       : resolver(io_service)
-      , query(boost::asio::ip::udp::v4(), address__, std::to_string(port__).data())
+      , query(boost::asio::ip::udp::v4(), conf.udp_sender.address, std::to_string(conf.udp_sender.port).data())
       , endpoint(*resolver.resolve(query))
       , socket(io_service)
-      , address_(address__)
-      , port_(port__)
+      , address_(conf.udp_sender.address)
+      , port_(conf.udp_sender.port)
     {
       L(INFO, "resolver, query, endpoint, socket are initialized");
-      L(INFO, "address(" << address__ << ") port(" << port__ << ")" );
+      L(INFO, "address(" << address_ << ") port(" << port_ << ")" );
       socket.open(boost::asio::ip::udp::v4());
       L(INFO, "socket opened");
     }
@@ -21,8 +21,12 @@ namespace arisin
     void udp_sender_t::operator()(const std::string& message) const
     {
       L(INFO, "message: " << message);
+#ifndef NDEBUG
+      //auto n =
+#endif
+      // ToDo: ????
       //socket.send_to(boost::asio::buffer(message), endpoint);
-      L(INFO, "message sent");
+      //L(INFO, "message sent [bytes]: " << n);
     }
     
     const std::string& udp_sender_t::address() const

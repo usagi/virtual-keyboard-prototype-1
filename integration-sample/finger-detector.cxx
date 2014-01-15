@@ -4,6 +4,32 @@ namespace arisin
 {
   namespace etupirka
   {
+    finger_detector_t::finger_detector_t(const configuration_t& conf, bool is_top)
+    {
+      L(INFO, "ctor");
+      set(conf, is_top);
+    }
+    
+    void finger_detector_t::set(const configuration_t& c, bool is_top)
+    {
+      L(INFO, "is_top: " << is_top);
+      set
+      ( is_top
+          ? c.finger_detector_top
+          : c.finger_detector_front
+      );
+    }
+    
+    void finger_detector_t::set(const configuration_t::finger_detector_configuration_t& c)
+    {
+      set_pre_bilateral(c.pre_bilateral_d, c.pre_bilateral_sc, c.pre_bilateral_ss);
+      set_pre_morphology(c.pre_morphology_n);
+      set_hsv(c.hsv_h_min, c.hsv_h_max, c.hsv_s_min, c.hsv_s_max, c.hsv_v_min, c.hsv_v_max);
+      set_nail_morphology(c.nail_morphology_n);
+      set_nail_median_blur(c.nail_median_blur_ksize);
+      set_circles(c.circles_dp, c.circles_min_dist, c.circles_param_1, c.circles_param_2, c.circles_min_radius, c.circles_max_radius);
+    }
+    
     void finger_detector_t::set_pre_bilateral(double d, double sc, double ss)
     {
       pre_bilateral_d_ = d;

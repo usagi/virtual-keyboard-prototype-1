@@ -3,6 +3,7 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
+#include "configuration.hxx"
 #include "logger.hxx"
 
 namespace arisin
@@ -30,7 +31,7 @@ namespace arisin
       int height_;
       
     public:
-      camera_capture_t(int top_camera_id, int front_camera_id, int width, int height);
+      camera_capture_t(const configuration_t& conf);
       captured_frames_t operator()();
       const int top_camera_id() const;
       const int front_camera_id() const;

@@ -3,6 +3,7 @@
 #include <string>
 #include <unordered_set>
 #include <WonderRabbitProject/SQLite3.hpp>
+#include "configuration.hxx"
 #include "logger.hxx"
 
 namespace arisin
@@ -21,7 +22,7 @@ namespace arisin
       pressing_keys_t pressing_keys_;
       
     public:
-      explicit virtual_keyboard_t(const std::string& databse__, const std::string& table__);
+      explicit virtual_keyboard_t(const configuration_t& conf);
       void reset();
       void add_test(const int x, const int y, const int stroke);
       const pressing_keys_t& pressing_keys() const;

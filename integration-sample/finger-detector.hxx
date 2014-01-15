@@ -27,6 +27,7 @@
 //#include "cv_gui_helper.hxx"
 //#include "cv_video_helper.hxx"
 
+#include "configuration.hxx"
 #include "logger.hxx"
 
 namespace arisin
@@ -55,6 +56,11 @@ namespace arisin
       
     public:
       using circles_t = std::vector<cv::Vec3f>;
+      
+      finger_detector_t(const configuration_t& conf, bool is_top);
+      
+      void set(const configuration_t& c, bool is_top);
+      void set(const configuration_t::finger_detector_configuration_t& c);
       
       void set_pre_bilateral(double d, double sc, double ss);
       void set_pre_morphology(int n);

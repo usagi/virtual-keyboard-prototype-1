@@ -4,12 +4,12 @@ namespace arisin
 {
   namespace etupirka
   {
-    virtual_keyboard_t::virtual_keyboard_t(const std::string& database__, const std::string& table__)
-      : database_object(database__)
-      , database_(database__)
-      , table_(table__)
+    virtual_keyboard_t::virtual_keyboard_t(const configuration_t& conf)
+      : database_object(conf.virtual_keyboard.database)
+      , database_(conf.virtual_keyboard.database)
+      , table_(conf.virtual_keyboard.table)
     {
-      L(INFO, "database(" << database__ << ") table(" << table__ << ")");
+      L(INFO, "database(" << database_ << ") table(" << table_ << ")");
     }
     
     void virtual_keyboard_t::reset()
