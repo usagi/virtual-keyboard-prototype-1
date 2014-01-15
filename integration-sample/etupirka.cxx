@@ -48,7 +48,17 @@ namespace arisin
     {
       initialize();
       
-      L(FATAL, "NOT IMPLEMENTED");
+      is_running_ = true;
+      
+      L(INFO, "run reciever mode main loop");
+      
+      while(is_running_)
+      {
+        const auto key_signal = (*udp_reciever)();
+        (*key_invoker)(key_signal.code_state.code, WonderRabbitProject::key::writer_t::state_t(key_signal.code_state.state));
+      }
+      
+      L(INFO, "exit main loop");
     }
     
     void etupirka_t::initialize()
