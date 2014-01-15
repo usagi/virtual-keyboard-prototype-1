@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdexcept>
+#include <boost/range/algorithm.hpp>
 
 #include "configuration.hxx"
 #include "commandline_helper.hxx"

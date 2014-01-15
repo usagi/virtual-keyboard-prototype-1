@@ -48,6 +48,8 @@ namespace arisin
       } finger_detector_top
       , finger_detector_front;
       
+      float circle_x_distance_threshold;
+      
       struct space_converter_configuration_t
       {
         using float_t = float;
@@ -78,6 +80,9 @@ namespace arisin
       {
         int port;
       } udp_reciver;
+      
+      bool send_repeat_key_down_signal;
+      bool recieve_repeat_key_down_signal;
       
       struct key_invoker_configuration_t
       {
