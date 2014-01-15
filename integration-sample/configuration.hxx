@@ -45,7 +45,7 @@ namespace arisin
           double circles_param_2;
           int circles_min_radius;
           int circles_max_radius;
-        } finger_detector_configuration;
+        } finger_detector_configuration_for_top, finger_detector_configuration_for_front;
         
         struct space_converter_configuration_t
         {
