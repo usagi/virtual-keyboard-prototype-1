@@ -21,6 +21,8 @@ namespace arisin
       udp::endpoint         endpoint;
       boost::system::error_code error;
       
+      L(INFO, "begin wait for socket_recieve_from");
+      
       //auto len = socket.receive_from(boost::asio::buffer(buffer), endpoint, 0, error);
       auto len = socket.receive_from(boost::asio::buffer(key_signal.char_array), endpoint, 0, error);
       

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <stdexcept>
 #include <boost/range/algorithm.hpp>
 
@@ -23,12 +24,20 @@ namespace arisin
     // Etupirka 主制御クラス
     class etupirka_t final
     {
+    public:
+      static constexpr size_t version_major    = 1;
+      static constexpr size_t version_minor    = 0;
+      static constexpr size_t version_revision = 0;
+      static const std::string version_string()
+      { return std::to_string(version_major) + "." + std::to_string(version_minor) + "." + std::to_string(version_revision); }
+      
+    private:
       void initialize(const mode_t);
       void run_main();
       void run_reciever();
       
       configuration_t conf_;
-      bool is_running_;
+      bool is_running_ = false;
       
       std::unique_ptr<camera_capture_t>   camera_capture;
       std::unique_ptr<finger_detector_t>  finger_detector_top;
