@@ -6,7 +6,7 @@ namespace arisin
   {
     udp_reciever_t::udp_reciever_t(const configuration_t& conf)
       : socket(io_service, boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(), conf.udp_sender.port))
-      , port_(conf.udp_sender.port)
+      , port_(conf.udp_reciever.port)
     {
       L(INFO, "socket is initialized");
       L(INFO, "port(" << port_ << ")" );

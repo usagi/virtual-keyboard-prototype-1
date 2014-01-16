@@ -45,8 +45,8 @@ namespace arisin
         std::string r;
         for(auto v: vs)
         {
-          r += v;
-          r += ',';
+          r += std::to_string(v);
+          r += ",";
         }
         r.resize(r.size() - 1);
         return r;

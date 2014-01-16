@@ -2,6 +2,9 @@
 
 #include <array>
 #include <string>
+#include <stdexcept>
+
+#include "logger.hxx"
 
 namespace arisin
 {
@@ -76,10 +79,10 @@ namespace arisin
         int port;
       } udp_sender;
       
-      struct udp_reciver_configuration_t
+      struct udp_reciever_configuration_t
       {
         int port;
-      } udp_reciver;
+      } udp_reciever;
       
       bool send_repeat_key_down_signal;
       bool recieve_repeat_key_down_signal;
