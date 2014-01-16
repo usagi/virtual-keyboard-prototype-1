@@ -1,7 +1,9 @@
 #pragma once
 
 #include <string>
-#include <sstream>
+#ifndef NDEBUG
+  #include <sstream>
+#endif
 #include <stdexcept>
 #include <boost/range/algorithm.hpp>
 
