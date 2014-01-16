@@ -14,8 +14,8 @@ echo "    generate sqlite3 importable data: $2/virtual-keyboard-data.csv"
 tail -n +2 $1/virtual-keyboard.csv | sed -r "s/^(([^,]+,){5}[^,]+),.*/\\1/g" > $2/virtual-keyboard-data.csv
 
 echo "    create table: $3/virtual-keyboard.sqlite3"
-sqlite3 $3/virtual-keyboard.sqlite3 "create table test(x real,y real,w real,h real,s real,id integer)"
+sqlite3 $3/virtual-keyboard.sqlite3 "create table test(x real,y real,w real,h real,s real,id integer)" || exit 1
 echo "    import data : $3/virtual-keyboard.sqlite3"
-sqlite3 -separator , $3/virtual-keyboard.sqlite3 ".import $2/virtual-keyboard-data.csv test"
+sqlite3 -separator , $3/virtual-keyboard.sqlite3 ".import $2/virtual-keyboard-data.csv test" || exit 2
 
 echo "  build succeeded"
