@@ -7,7 +7,13 @@ namespace arisin
     etupirka_t::etupirka_t(const configuration_t& conf)
       : conf_(conf)
     {
-      L(INFO, "conf.mode: " << int(conf.mode));
+      L(INFO, "etupirka ctor");
+      
+#ifndef NDEBUG
+      std::stringstream s;
+      commandline_helper_t::show_conf(conf, s);
+      L(INFO, "conf.mode: \n" << s.str());
+#endif
     }
     
     void etupirka_t::run()

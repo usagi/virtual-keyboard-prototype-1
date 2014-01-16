@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <sstream>
 #include <stdexcept>
 #include <boost/range/algorithm.hpp>
 
