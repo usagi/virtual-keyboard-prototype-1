@@ -5,9 +5,12 @@
 #include <stdexcept>
 #include <iostream>
 #include <fstream>
+#include <cmath>
 
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/ini_parser.hpp>
+#include <boost/algorithm/string.hpp>
+#include <boost/range/algorithm.hpp>
 
 #include "configuration.hxx"
 #include "logger.hxx"

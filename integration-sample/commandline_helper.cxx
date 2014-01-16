@@ -17,7 +17,18 @@ namespace
     throw std::runtime_error(std::string("unkown mode: ") + std::to_string(int(m)));
   }
   
-        
+  arisin::etupirka::mode_t to_mode_t(const std::string& s)
+  {
+    switch(h(s.data()))
+    {
+      case h("none"): return arisin::etupirka::mode_t::none;
+      case h("main"): return arisin::etupirka::mode_t::main;
+      case h("reciever"): return arisin::etupirka::mode_t::reciever;
+    }
+    L(FATAL, "can not convert to mode_t from: " << s);
+    throw std::runtime_error(std::string("can not convert to mode_t from: ") + s);
+  }
+  
   template<class T>
   std::string to_string(const T& vs)
   {
@@ -29,6 +40,28 @@ namespace
     }
     r.resize(r.size() - 1);
     return r;
+  }
+  
+  template<size_t N>
+  std::array<typename arisin::etupirka::configuration_t::space_converter_configuration_t::float_t, N>
+  to_aNd_t(const std::string& s)
+  {
+    using float_t = arisin::etupirka::configuration_t::space_converter_configuration_t::float_t;
+    std::vector<std::string> v;
+    
+    boost::split(v, s, boost::is_any_of(","));
+    
+    if(v.size() != N)
+    {
+      L(FATAL, "to_aNd_t size is not equal(N=" << N << "): " << v.size());
+      throw std::runtime_error(std::string("to_aNd_t size is not equal(N=") + std::to_string(N) + "): " + std::to_string(v.size()));
+    }
+    
+    std::array<float_t, N> a;
+    
+    boost::transform(v, std::begin(a), [](const std::string& value){ return std::stof(value); });
+    
+    return a;
   }
   
 }
@@ -214,15 +247,76 @@ namespace arisin
     void commandline_helper_t::load_file(configuration_t& conf, const std::string& filename)
     {
       L(INFO, "load_file");
-      std::ifstream f(filename);
-      if(f)
+      
+      boost::property_tree::ptree p;
+      
+      try
+      { read_ini(filename, p); }
+      catch(...)
       {
-        
+        L(ERROR, "exception: boost::property_tree::read_ini; file " << filename << " is not exists, maybe.");
+        return;
       }
-      else
-      {
-        L(ERROR, "target conf file is not exists or cannot opened: " << filename);
-      }
+      
+      if(const auto v = p.get_optional<std::string>("mode")) conf.mode = to_mode_t(v.get());
+#define ARISIN_ETUPIRKA_TMP(T,N) \
+      if(const auto v = p.get_optional<T>( #N )) conf. N = v.get();
+      ARISIN_ETUPIRKA_TMP(float, circle_x_distance_threshold)
+      ARISIN_ETUPIRKA_TMP(bool, send_repeat_key_down_signal)
+      ARISIN_ETUPIRKA_TMP(bool, recieve_repeat_key_down_signal)
+      
+      ARISIN_ETUPIRKA_TMP(double, finger_detector_top.pre_bilateral_d)
+      ARISIN_ETUPIRKA_TMP(double, finger_detector_top.pre_bilateral_sc)
+      ARISIN_ETUPIRKA_TMP(double, finger_detector_top.pre_bilateral_ss)
+      ARISIN_ETUPIRKA_TMP(int, finger_detector_top.pre_morphology_n)
+      ARISIN_ETUPIRKA_TMP(double, finger_detector_top.hsv_h_min)
+      ARISIN_ETUPIRKA_TMP(double, finger_detector_top.hsv_h_max)
+      ARISIN_ETUPIRKA_TMP(double, finger_detector_top.hsv_s_min)
+      ARISIN_ETUPIRKA_TMP(double, finger_detector_top.hsv_s_max)
+      ARISIN_ETUPIRKA_TMP(double, finger_detector_top.hsv_v_min)
+      ARISIN_ETUPIRKA_TMP(double, finger_detector_top.hsv_v_max)
+      ARISIN_ETUPIRKA_TMP(int, finger_detector_top.nail_morphology_n)
+      ARISIN_ETUPIRKA_TMP(int, finger_detector_top.nail_median_blur_ksize)
+      ARISIN_ETUPIRKA_TMP(double, finger_detector_top.circles_dp)
+      ARISIN_ETUPIRKA_TMP(double, finger_detector_top.circles_min_dist)
+      ARISIN_ETUPIRKA_TMP(double, finger_detector_top.circles_param_1)
+      ARISIN_ETUPIRKA_TMP(double, finger_detector_top.circles_param_2)
+      ARISIN_ETUPIRKA_TMP(int, finger_detector_top.circles_min_radius)
+      ARISIN_ETUPIRKA_TMP(int, finger_detector_top.circles_max_radius)
+
+      ARISIN_ETUPIRKA_TMP(double, finger_detector_front.pre_bilateral_d)
+      ARISIN_ETUPIRKA_TMP(double, finger_detector_front.pre_bilateral_sc)
+      ARISIN_ETUPIRKA_TMP(double, finger_detector_front.pre_bilateral_ss)
+      ARISIN_ETUPIRKA_TMP(int, finger_detector_front.pre_morphology_n)
+      ARISIN_ETUPIRKA_TMP(double, finger_detector_front.hsv_h_min)
+      ARISIN_ETUPIRKA_TMP(double, finger_detector_front.hsv_h_max)
+      ARISIN_ETUPIRKA_TMP(double, finger_detector_front.hsv_s_min)
+      ARISIN_ETUPIRKA_TMP(double, finger_detector_front.hsv_s_max)
+      ARISIN_ETUPIRKA_TMP(double, finger_detector_front.hsv_v_min)
+      ARISIN_ETUPIRKA_TMP(double, finger_detector_front.hsv_v_max)
+      ARISIN_ETUPIRKA_TMP(int, finger_detector_front.nail_morphology_n)
+      ARISIN_ETUPIRKA_TMP(int, finger_detector_front.nail_median_blur_ksize)
+      ARISIN_ETUPIRKA_TMP(double, finger_detector_front.circles_dp)
+      ARISIN_ETUPIRKA_TMP(double, finger_detector_front.circles_min_dist)
+      ARISIN_ETUPIRKA_TMP(double, finger_detector_front.circles_param_1)
+      ARISIN_ETUPIRKA_TMP(double, finger_detector_front.circles_param_2)
+      ARISIN_ETUPIRKA_TMP(int, finger_detector_front.circles_min_radius)
+      ARISIN_ETUPIRKA_TMP(int, finger_detector_front.circles_max_radius)
+
+      if(const auto v = p.get_optional<std::string>("space_converter.top_camera_position")) conf.space_converter.top_camera_position = to_aNd_t<3>(v.get());
+      if(const auto v = p.get_optional<std::string>("space_converter.front_camera_position")) conf.space_converter.front_camera_position = to_aNd_t<3>(v.get());
+      ARISIN_ETUPIRKA_TMP(float, space_converter.top_camera_angle_x)
+      ARISIN_ETUPIRKA_TMP(float, space_converter.camera_fov_diagonal)
+      if(const auto v = p.get_optional<std::string>("space_converter.camera_sensor_size")) conf.space_converter.camera_sensor_size = to_aNd_t<2>(v.get());
+      if(const auto v = p.get_optional<std::string>("space_converter.image_size")) conf.space_converter.image_size = to_aNd_t<2>(v.get());
+      
+      ARISIN_ETUPIRKA_TMP(std::string, virtual_keyboard.database)
+      ARISIN_ETUPIRKA_TMP(std::string, virtual_keyboard.table)
+      
+      ARISIN_ETUPIRKA_TMP(std::string, udp_sender.address)
+      ARISIN_ETUPIRKA_TMP(int, udp_sender.port)
+      ARISIN_ETUPIRKA_TMP(int, udp_reciever.port)
+#undef ARISIN_ETUPIRKA_TMP
     }
     
     configuration_t commandline_helper_t::load_default()
