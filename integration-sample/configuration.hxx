@@ -21,6 +21,8 @@ namespace arisin
     {
       mode_t mode;
       
+      int fps;
+      
       std::string video_file_top;
       std::string video_file_front;
       

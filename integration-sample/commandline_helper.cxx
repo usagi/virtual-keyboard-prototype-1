@@ -171,6 +171,12 @@ namespace arisin
             catch(const std::exception& e) { LOG(ERROR) << "catch exception: " << e.what(); }
             continue;
             
+          case h("-F"):
+          case h("--fps"):
+            try { conf.fps = std::stoi(*++i); }
+            catch(const std::exception& e) { LOG(ERROR) << "catch exception: " << e.what(); }
+            continue;
+            
           case h("-h"):
           case h("--help"):
             show_help();
@@ -218,6 +224,9 @@ namespace arisin
         "    [-a|--address] (address:string)\n"
         "      set send-to address to (address:string).\n"
         "\n"
+        "    [-F|--fps] (fps:int)\n"
+        "      set main-loop fps[frames/sec] to (fps:int).\n"
+        "\n"
         "    [--video-file-top] (filename:string)"
         "      set top-cam source to video file (filename:string)."
         "\n"
@@ -231,6 +240,9 @@ namespace arisin
         "  options:\n"
         "    [-p|--port] (port:int)\n"
         "      set send/recieve port number to (port:int).\n"
+        "\n"
+        "    [-F|--fps] (fps:int)\n"
+        "      set main-loop fps[frames/sec] to (fps:int).\n"
         "\n"
         "<Usage 4> ./etupirka (-d|--default-conf)\n"
         "  show etupirka default configuration and exit.\n"
@@ -260,6 +272,7 @@ namespace arisin
       boost::property_tree::ptree p;
       
       p.put("mode", to_string(conf.mode));
+      p.put("fps", conf.fps);
       p.put("video_file_top", conf.video_file_top);
       p.put("video_file_front", conf.video_file_front);
       p.put("circle_x_distance_threshold", conf.circle_x_distance_threshold);
@@ -337,6 +350,7 @@ namespace arisin
       if(const auto v = p.get_optional<std::string>("mode")) conf.mode = to_mode_t(v.get());
 #define ARISIN_ETUPIRKA_TMP(T,N) \
       if(const auto v = p.get_optional<T>( #N )) conf. N = v.get();
+      ARISIN_ETUPIRKA_TMP(int, fps)
       ARISIN_ETUPIRKA_TMP(std::string, video_file_top)
       ARISIN_ETUPIRKA_TMP(std::string, video_file_front)
       ARISIN_ETUPIRKA_TMP(float, circle_x_distance_threshold)
@@ -403,6 +417,8 @@ namespace arisin
       return
         {
           mode_t::none
+        
+        , 30
         
         , ""
         , ""
