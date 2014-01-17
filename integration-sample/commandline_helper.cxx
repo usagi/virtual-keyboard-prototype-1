@@ -159,6 +159,18 @@ namespace arisin
             catch(const std::exception& e) { LOG(ERROR) << "catch exception: " << e.what(); }
             continue;
             
+          case h("-p"):
+          case h("--port"):
+            try { conf.udp_reciever.port = conf.udp_sender.port = std::stoi(*++i); }
+            catch(const std::exception& e) { LOG(ERROR) << "catch exception: " << e.what(); }
+            continue;
+            
+          case h("-a"):
+          case h("--address"):
+            try { conf.udp_sender.address = *++i; }
+            catch(const std::exception& e) { LOG(ERROR) << "catch exception: " << e.what(); }
+            continue;
+            
           case h("-h"):
           case h("--help"):
             show_help();
@@ -176,9 +188,61 @@ namespace arisin
     void commandline_helper_t::show_help()
     {
       constexpr const char * const help =
-        "help\n"
-        "help\n"
-        "help\n"
+        "<Usage 0> ./etupirka [-h|--help]\n"
+        "  show this help and exit.\n"
+        "\n"
+        "<Usage 1> ./etupirka (-v|--version)\n"
+        "  show version and exit.\n"
+        "\n"
+        "<Usage 2> ./etupirka (-m|--mode) main [options]"
+        "  run the 'main' mode.\n"
+        "    * capture --> finger-detection --> space-convert\n"
+        "      --> virtual-keyboard --> send-keysignal\n"
+        "\n"
+        "  options:\n"
+        "    [-t|--camera-capture/top-camera-id] (camera_device_id:int)\n"
+        "      set top-cam device id to (camera_device_id:int).\n"
+        "\n"
+        "    [-f|--camera-capture/front-camera-id] (camera_device_id:int)\n"
+        "      set front-cam device id to (camera_device_id:int).\n"
+        "\n"
+        "    [-W|--camera-capture/width] (camera-resolution-width:int)\n"
+        "      set camera resolution width to (camera-resolution-with:int).\n"
+        "\n"
+        "    [-H|--camera-capture/height] (camera-resolution-height:int)\n"
+        "      set camera resolution height to (camera-resolution-height:int).\n"
+        "\n"
+        "    [-p|--port] (port:int)\n"
+        "      set send/recieve port number to (port:int).\n"
+        "\n"
+        "    [-a|--address] (address:string)\n"
+        "      set send-to address to (address:string).\n"
+        "\n"
+        "    [--video-file-top] (filename:string)"
+        "      set top-cam source to video file (filename:string)."
+        "\n"
+        "    [--video-file-front] (filename:string)"
+        "      set front-cam source to video file (filename:string)."
+        "\n"
+        "<Usage 3> ./etupirka (-m|--mode) reciever [options]"
+        "  run the 'main' mode.\n"
+        "    * recieve-keysignal --> invoke-keysignal\n"
+        "\n"
+        "  options:\n"
+        "    [-p|--port] (port:int)\n"
+        "      set send/recieve port number to (port:int).\n"
+        "\n"
+        "<Usage 4> ./etupirka (-d|--default-conf)\n"
+        "  show etupirka default configuration and exit.\n"
+        "  if you want save to file: `./etupirka -d > etupirka.conf`"
+        "\n"
+        "<note>\n"
+        "  etupirka load configuration priority is: \n"
+        "    (low-priority)"
+        "    0: default\n"
+        "    1: etupirka.conf\n"
+        "    2: commandline options\n"
+        "    (high-priority)\n"
         ;
       std::cout << help;
     }
