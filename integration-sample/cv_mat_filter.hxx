@@ -111,7 +111,7 @@ namespace
     
     return std::move(r);
   }
-  
+  /*
   // in : cv::Mat<CV_8UC3(BGR24)>
   // out: [ H[value([0.f-360.f)), count], S[value([0.f-1.f]), count], V[value[0-255], count] >
   inline std::array<std::map<float, size_t>, 3> cv_mat_hsv_hist_from_BGR24(const cv::Mat& m)
@@ -147,6 +147,7 @@ namespace
     
     return std::move(r);
   }
+  */
   /*
   inline void write_file_hsv_hist
   ( const std::array<std::map<float, size_t>, 3>& hsv_hist
