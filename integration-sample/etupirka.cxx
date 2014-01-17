@@ -7,12 +7,12 @@ namespace arisin
     etupirka_t::etupirka_t(const configuration_t& conf)
       : conf_(conf)
     {
-      L(INFO, "etupirka ctor");
+      DLOG(INFO) << "etupirka ctor";
       
 #ifndef NDEBUG
       std::stringstream s;
       commandline_helper_t::show_conf(conf, s);
-      L(INFO, "conf.mode: \n" << s.str());
+      DLOG(INFO) << "conf.mode: \n" << s.str();
 #endif
     }
     
@@ -20,25 +20,25 @@ namespace arisin
     {
       if(is_running_)
       {
-        L(WARNING, "etupirka(" << this << ") is already running, return");
+        LOG(WARNING) << "etupirka(" << this << ") is already running, return";
         return;
       }
         
       switch(conf_.mode)
       {
         case mode_t::main:
-          L(INFO, "mode is main, to run_main");
+          DLOG(INFO) << "mode is main, to run_main";
           run_main();
           return;
           
         case mode_t::reciever:
-          L(INFO, "mode is reciever, to run_reciever");
+          DLOG(INFO) << "mode is reciever, to run_reciever";
           run_reciever();
           return;
           
         case mode_t::none:
         default:
-          L(INFO, "mode is none, return");
+          DLOG(INFO) << "mode is none, return";
           return;
       }
     }
@@ -49,7 +49,7 @@ namespace arisin
       
       is_running_ = true;
       
-      L(INFO, "run main mode main loop");
+      DLOG(INFO) << "run main mode main loop";
       
       virtual_keyboard_t::pressing_keys_t pressing_keys_before;
       
@@ -119,7 +119,7 @@ namespace arisin
         pressing_keys_before = pressing_keys;
       }
       
-      L(INFO, "exit main loop");
+      DLOG(INFO) << "exit main loop";
     }
     
     void etupirka_t::run_reciever()
@@ -128,7 +128,7 @@ namespace arisin
       
       is_running_ = true;
       
-      L(INFO, "run reciever mode main loop");
+      DLOG(INFO) << "run reciever mode main loop";
       
       while(is_running_)
       {
@@ -136,12 +136,12 @@ namespace arisin
         (*key_invoker)(key_signal.code_state.code, WonderRabbitProject::key::writer_t::state_t(key_signal.code_state.state));
       }
       
-      L(INFO, "exit main loop");
+      DLOG(INFO) << "exit main loop";
     }
     
     void etupirka_t::initialize()
     {
-      L(INFO, "initialize");
+      DLOG(INFO) << "initialize";
       switch(conf_.mode)
       {
         case mode_t::main:
@@ -177,14 +177,14 @@ namespace arisin
           key_invoker.reset(nullptr);
       }
       
-      L(INFO, camera_capture.get());
-      L(INFO, finger_detector_top.get());
-      L(INFO, finger_detector_front.get());
-      L(INFO, space_converter.get());
-      L(INFO, virtual_keyboard.get());
-      L(INFO, udp_sender.get());
-      L(INFO, udp_reciever.get());
-      L(INFO, key_invoker.get());
+      DLOG(INFO) << camera_capture.get();
+      DLOG(INFO) << finger_detector_top.get();
+      DLOG(INFO) << finger_detector_front.get();
+      DLOG(INFO) << space_converter.get();
+      DLOG(INFO) << virtual_keyboard.get();
+      DLOG(INFO) << udp_sender.get();
+      DLOG(INFO) << udp_reciever.get();
+      DLOG(INFO) << key_invoker.get();
       
     }
     

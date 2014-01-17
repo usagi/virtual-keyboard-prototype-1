@@ -12,20 +12,20 @@ namespace arisin
       , address_(conf.udp_sender.address)
       , port_(conf.udp_sender.port)
     {
-      L(INFO, "resolver, query, endpoint, socket are initialized");
-      L(INFO, "address(" << address_ << ") port(" << port_ << ")" );
+      DLOG(INFO) << "resolver, query, endpoint, socket are initialized";
+      DLOG(INFO) << "address(" << address_ << ") port(" << port_ << ")" ;
       socket.open(boost::asio::ip::udp::v4());
-      L(INFO, "socket opened");
+      DLOG(INFO) << "socket opened";
     }
     
     void udp_sender_t::operator()(const key_signal_t& key_signal)
     {
-      L(INFO, "key_signal code, state: " << key_signal.code_state.code << "," << key_signal.code_state.state);
+      DLOG(INFO) << "key_signal code, state: " << key_signal.code_state.code << "," << key_signal.code_state.state;
 #ifndef NDEBUG
       auto n =
 #endif
       socket.send_to(boost::asio::buffer(key_signal.char_array), endpoint);
-      L(INFO, "message sent [bytes]: " << n);
+      DLOG(INFO) << "message sent [bytes]: " << n;
     }
     
     const std::string& udp_sender_t::address() const

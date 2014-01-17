@@ -13,7 +13,7 @@ namespace
       case arisin::etupirka::mode_t::main: return "main";
       case arisin::etupirka::mode_t::reciever: return "reciever";
     }
-    L(FATAL, "unkown mode: " << int(m));
+    LOG(FATAL) << "unkown mode: " << int(m);
     throw std::runtime_error(std::string("unkown mode: ") + std::to_string(int(m)));
   }
   
@@ -25,7 +25,7 @@ namespace
       case h("main"): return arisin::etupirka::mode_t::main;
       case h("reciever"): return arisin::etupirka::mode_t::reciever;
     }
-    L(FATAL, "can not convert to mode_t from: " << s);
+    LOG(FATAL) << "can not convert to mode_t from: " << s;
     throw std::runtime_error(std::string("can not convert to mode_t from: ") + s);
   }
   
@@ -53,7 +53,7 @@ namespace
     
     if(v.size() != N)
     {
-      L(FATAL, "to_aNd_t size is not equal(N=" << N << "): " << v.size());
+      LOG(FATAL) << "to_aNd_t size is not equal(N=" << N << "): " << v.size();
       throw std::runtime_error(std::string("to_aNd_t size is not equal(N=") + std::to_string(N) + "): " + std::to_string(v.size()));
     }
     
@@ -72,16 +72,16 @@ namespace arisin
   {
     configuration_t commandline_helper_t::interpret(const std::vector<std::string>& arguments)
     {
-      L(INFO, "interpert");
+      DLOG(INFO) << "interpert";
 #ifndef NDEBUG
       for(size_t n = 0; n < arguments.size(); ++n)
-        L(INFO, "arguments[" << n << "]: " << arguments[n]);
+        DLOG(INFO) << "arguments[" << n << "]: " << arguments[n];
 #endif
       
       // もし、コマンドラインに -dまたは--default-confがあればshow_defaultして終わる
       if(std::find_if(std::begin(arguments), std::end(arguments), [](const std::string& a){ return a == "-d" || a == "--default-conf"; }) != std::end(arguments))
       {
-        L(INFO, "found -d(--default-conf) option in commandline arguments");
+        DLOG(INFO) << "found -d(--default-conf) option in commandline arguments";
         show_default();
         exit(0);
       }
@@ -100,7 +100,7 @@ namespace arisin
        && std::none_of(std::begin(arguments), std::end(arguments), [](const std::string& a){ return a == "-m" || a == "--mode"; })
       )
       {
-        L(WARNING, "conf.mode=none and arguments not include -m(--mode) option. force show help and exit");
+        LOG(WARNING) << "conf.mode=none and arguments not include -m(--mode) option. force show help and exit";
         show_help();
         exit(0);
       }
@@ -122,31 +122,41 @@ namespace arisin
                 default: conf.mode = mode_t::none;
               }
             }
-            catch(const std::exception& e) { L(ERROR, "catch exception: " << e.what()); }
+            catch(const std::exception& e) { LOG(ERROR) << "catch exception: " << e.what(); }
             continue;
             
           case h("-t"):
           case h("--camera-capture/top-camera-id"):
             try { conf.camera_capture.top_camera_id = std::stoi(*++i); }
-            catch(const std::exception& e) { L(ERROR, "catch exception: " << e.what()); }
+            catch(const std::exception& e) { LOG(ERROR) << "catch exception: " << e.what(); }
             continue;
             
           case h("-f"):
           case h("--camera-capture/front-camera-id"):
             try { conf.camera_capture.front_camera_id = std::stoi(*++i); }
-            catch(const std::exception& e) { L(ERROR, "catch exception: " << e.what()); }
+            catch(const std::exception& e) { LOG(ERROR) << "catch exception: " << e.what(); }
             continue;
             
           case h("-W"):
           case h("--camera-capture/width"):
             try { conf.camera_capture.width = std::stoi(*++i); }
-            catch(const std::exception& e) { L(ERROR, "catch exception: " << e.what()); }
+            catch(const std::exception& e) { LOG(ERROR) << "catch exception: " << e.what(); }
             continue;
             
           case h("-H"):
           case h("--camera-capture/height"):
             try { conf.camera_capture.height = std::stoi(*++i); }
-            catch(const std::exception& e) { L(ERROR, "catch exception: " << e.what()); }
+            catch(const std::exception& e) { LOG(ERROR) << "catch exception: " << e.what(); }
+            continue;
+            
+          case h("--video-file-top"):
+            try { conf.video_file_top = *++i; }
+            catch(const std::exception& e) { LOG(ERROR) << "catch exception: " << e.what(); }
+            continue;
+            
+          case h("--video-file-front"):
+            try { conf.video_file_front = *++i; }
+            catch(const std::exception& e) { LOG(ERROR) << "catch exception: " << e.what(); }
             continue;
             
           case h("-h"):
@@ -175,13 +185,13 @@ namespace arisin
     
     void commandline_helper_t::show_default()
     {
-      L(INFO, "show_default");
+      DLOG(INFO) << "show_default";
       show_conf(load_default());
     }
     
     void commandline_helper_t::show_conf(const configuration_t& conf, std::ostream& out)
     {
-      L(INFO, "show_conf");
+      DLOG(INFO) << "show_conf";
       
       boost::property_tree::ptree p;
       
@@ -246,7 +256,7 @@ namespace arisin
     
     void commandline_helper_t::load_file(configuration_t& conf, const std::string& filename)
     {
-      L(INFO, "load_file");
+      DLOG(INFO) << "load_file";
       
       boost::property_tree::ptree p;
       
@@ -254,7 +264,7 @@ namespace arisin
       { read_ini(filename, p); }
       catch(...)
       {
-        L(ERROR, "exception: boost::property_tree::read_ini; file " << filename << " is not exists, maybe.");
+        LOG(ERROR) << "exception: boost::property_tree::read_ini; file " << filename << " is not exists, maybe.";
         return;
       }
       
@@ -321,10 +331,13 @@ namespace arisin
     
     configuration_t commandline_helper_t::load_default()
     {
-      L(INFO, "load_default");
+      DLOG(INFO) << "load_default";
       return
         {
           mode_t::none
+        
+        , ""
+        , ""
         
         , {   0
           ,   1

@@ -6,13 +6,13 @@ namespace arisin
   {
     finger_detector_t::finger_detector_t(const configuration_t& conf, bool is_top)
     {
-      L(INFO, "ctor");
+      DLOG(INFO) << "ctor";
       set(conf, is_top);
     }
     
     void finger_detector_t::set(const configuration_t& c, bool is_top)
     {
-      L(INFO, "is_top: " << is_top);
+      DLOG(INFO) << "is_top: " << is_top;
       set
       ( is_top
           ? c.finger_detector_top
@@ -35,13 +35,13 @@ namespace arisin
       pre_bilateral_d_ = d;
       pre_bilateral_sc_ = sc;
       pre_bilateral_ss_ = ss;
-      L(INFO, "set_pre_bilateral d, sc, ss: " << d << ", " << sc << ", " << ss);
+      DLOG(INFO) << "set_pre_bilateral d, sc, ss: " << d << ", " << sc << ", " << ss;
     }
     
     void finger_detector_t::set_pre_morphology(int n)
     {
       pre_morphology_n_ = n;
-      L(INFO, "set_pre_morphology n: " << n);
+      DLOG(INFO) << "set_pre_morphology n: " << n;
     }
     
     void finger_detector_t::set_hsv(float hsv_h_min, float hsv_h_max, float hsv_s_min, float hsv_s_max, float hsv_v_min, float hsv_v_max)
@@ -52,13 +52,13 @@ namespace arisin
       hsv_s_max_ = hsv_s_max;
       hsv_v_min_ = hsv_v_min;
       hsv_v_max_ = hsv_v_max;
-      L(INFO, "set_hsv h-min, h-max, s-min, s-max, v-min, v-max: " << hsv_h_min << ", " << hsv_h_max << ", " << hsv_s_min << ", " << hsv_s_max << ", " << hsv_v_min << ", " << hsv_v_max << ", ");
+      DLOG(INFO) << "set_hsv h-min, h-max, s-min, s-max, v-min, v-max: " << hsv_h_min << ", " << hsv_h_max << ", " << hsv_s_min << ", " << hsv_s_max << ", " << hsv_v_min << ", " << hsv_v_max << ", ";
     }
     
     void finger_detector_t::set_nail_morphology(int n)
     {
       nail_morphology_n_ = n;
-      L(INFO, "set_nail_morphology n: " << n);
+      DLOG(INFO) << "set_nail_morphology n: " << n;
     }
     
     void finger_detector_t::set_nail_median_blur(int ksize)
@@ -67,7 +67,7 @@ namespace arisin
         ++ksize;
       
       nail_median_blur_ksize_ = ksize;
-      L(INFO, "set_nail_median_blur ksize: " << ksize);
+      DLOG(INFO) << "set_nail_median_blur ksize: " << ksize;
     }
     
     void finger_detector_t::set_circles(double dp, double min_dist, double param_1, double param_2, int min_radius, int max_radius)
@@ -78,7 +78,7 @@ namespace arisin
       circles_param_2_ = param_2;
       circles_min_radius_ = min_radius;
       circles_max_radius_ = max_radius;
-      L(INFO, "set_circles dp, min_dist, param_1, param_2, min_radius, max_radius: " << dp << ", " << min_dist << ", " << param_1 << ", " << param_2 << ", " << min_radius << ", " << max_radius);
+      DLOG(INFO) << "set_circles dp, min_dist, param_1, param_2, min_radius, max_radius: " << dp << ", " << min_dist << ", " << param_1 << ", " << param_2 << ", " << min_radius << ", " << max_radius;
     }
     
     finger_detector_t::circles_t finger_detector_t::operator()(const cv::Mat& frame) const
@@ -153,7 +153,7 @@ namespace arisin
       }
 #ifndef NDEBUG
       for(const auto& circle: circles)
-        L(INFO, "circle x, y, r: " << circle[0] << ", " << circle[1] << ", " << circle[2]);
+        DLOG(INFO) << "circle x, y, r: " << circle[0] << ", " << circle[1] << ", " << circle[2];
 #endif
       return circles;
     }

@@ -10,21 +10,21 @@ namespace arisin
       , width_(conf.camera_capture.width)
       , height_(conf.camera_capture.height)
     {
-      L(INFO, "top-cam-id(" << top_camera_id_ << ") front-cam-id(" << front_camera_id_ << ") width(" << width_ << ") height(" << height_ << ")");
+      DLOG(INFO) << "top-cam-id(" << top_camera_id_ << ") front-cam-id(" << front_camera_id_ << ") width(" << width_ << ") height(" << height_ << ")";
       
       captures[top].set(CV_CAP_PROP_FRAME_HEIGHT, height_);
       captures[top].set(CV_CAP_PROP_FRAME_WIDTH , width_);
-      L(INFO, "top-cam set height and width");
+      DLOG(INFO) << "top-cam set height and width";
       
       captures[front].set(CV_CAP_PROP_FRAME_HEIGHT, height_);
       captures[front].set(CV_CAP_PROP_FRAME_WIDTH , width_);
-      L(INFO, "front-cam set height and width");
+      DLOG(INFO) << "front-cam set height and width";
       
       captures[top].open(top_camera_id_);
-      L(INFO, "top-cam opened");
+      DLOG(INFO) << "top-cam opened";
       
       captures[front].open(front_camera_id_);
-      L(INFO, "front-cam opened");
+      DLOG(INFO) << "front-cam opened";
     }
     
     camera_capture_t::captured_frames_t camera_capture_t::operator()()
@@ -35,11 +35,11 @@ namespace arisin
       
       captures[top] >> tmp;
       r.top = tmp.clone();
-      L(INFO, "top-cam captured");
+      DLOG(INFO) << "top-cam captured";
       
       captures[front] >> tmp;
       r.front = tmp.clone();
-      L(INFO, "front-cam captured");
+      DLOG(INFO) << "front-cam captured";
       
       return std::move(r);
     }

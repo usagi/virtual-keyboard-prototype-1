@@ -113,11 +113,11 @@ if(APPLE)
 endif(APPLE)
 
 
-if(CMAKE_BUILD_TYPE STREQUAL debug)
+#if(CMAKE_BUILD_TYPE STREQUAL debug)
   pkg_search_module(GLOG REQUIRED libglog)
   include_directories(${GLOG_INCLUDE_DIRS})
   target_link_libraries(etupirka ${GLOG_LIBRARIES})
-endif()
+#endif()
 
 find_program(SQLITE3 sqlite3 HINTS ~/opt/bin /opt/local/bin)
 if(NOT SQLITE3)

@@ -21,6 +21,9 @@ namespace arisin
     {
       mode_t mode;
       
+      std::string video_file_top;
+      std::string video_file_front;
+      
       struct camera_capture_configuration_t
       {
         int top_camera_id;

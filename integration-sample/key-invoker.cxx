@@ -16,6 +16,7 @@ namespace arisin
     
     void key_invoker_t::operator()(int key_usb_hid_usage_id, WonderRabbitProject::key::writer_t::state_t key_state)
     {
+      DLOG(INFO) << "invoke: key_usb_hid_usage_id(" << key_usb_hid_usage_id << ") key_state(" << int(key_state) << ")";
       switch(key_state)
       {
         // down イベントの場合は押下中のキーを pressing_keys に保持する

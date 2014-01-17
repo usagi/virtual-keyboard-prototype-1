@@ -8,17 +8,18 @@ namespace arisin
     {
       void initialize(const bool output_to_stderr)
       {
-#ifdef ARISIN_ETUPIRIKA_LOGGER
         static bool is_initialized = false;
         if(!is_initialized)
         {
           google::InitGoogleLogging("etupirka");
           if(output_to_stderr)
             google::LogToStderr();
+//#ifdef NDEBUG
+//          FLAGS_minloglevel = 1;
+//#endif
           is_initialized = true;
         }
-#endif
-        L(INFO, "etupirka logger initialized");
+        DLOG(INFO) << "etupirka logger initialized";
       }
     }
   }

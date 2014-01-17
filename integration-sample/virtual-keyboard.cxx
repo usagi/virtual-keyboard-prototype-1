@@ -18,7 +18,7 @@ namespace arisin
         )
       )
     {
-      L(INFO, "database(" << database_ << ") table(" << table_ << ")");
+      DLOG(INFO) << "database(" << database_ << ") table(" << table_ << ")";
       
       load_x_shift();
     }
@@ -26,7 +26,7 @@ namespace arisin
     void virtual_keyboard_t::load_x_shift()
     {
       const auto sql = std::string("select max(x+w) from ") + table();
-      L(INFO, "SQL: " << sql);
+      DLOG(INFO) << "SQL: " << sql;
       x_shift_ = - std::get<0>(database_object.execute_data<double>(sql)[0]) / 2.;
     }
     
@@ -35,10 +35,10 @@ namespace arisin
     
     void virtual_keyboard_t::add_test(const double x, const double y, const double stroke)
     {
-      L(INFO, "x(" << x << ") y(" << y << ") stroke(" << stroke << ")");
+      DLOG(INFO) << "x(" << x << ") y(" << y << ") stroke(" << stroke << ")";
       
       const auto x_shifted = x + x_shift_;
-      L(INFO, "x_shifted: " << x_shifted);
+      DLOG(INFO) << "x_shifted: " << x_shifted;
       
       statement.reset()
                .bind(x_shifted, 1)
@@ -52,7 +52,7 @@ namespace arisin
       
       for (const auto& row: results)
       {
-        L(INFO, "key: id(" << std::get<0>(row) << ")");
+        DLOG(INFO) << "key: id(" << std::get<0>(row) << ")";
         pressing_keys_.emplace(std::get<0>(row));
       }
     }
