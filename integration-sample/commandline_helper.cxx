@@ -196,6 +196,8 @@ namespace arisin
       boost::property_tree::ptree p;
       
       p.put("mode", to_string(conf.mode));
+      p.put("video_file_top", conf.video_file_top);
+      p.put("video_file_front", conf.video_file_front);
       p.put("circle_x_distance_threshold", conf.circle_x_distance_threshold);
       p.put("send_repeat_key_down_signal", conf.send_repeat_key_down_signal);
       p.put("recieve_repeat_key_down_signal", conf.recieve_repeat_key_down_signal);
@@ -271,6 +273,8 @@ namespace arisin
       if(const auto v = p.get_optional<std::string>("mode")) conf.mode = to_mode_t(v.get());
 #define ARISIN_ETUPIRKA_TMP(T,N) \
       if(const auto v = p.get_optional<T>( #N )) conf. N = v.get();
+      ARISIN_ETUPIRKA_TMP(std::string, video_file_top)
+      ARISIN_ETUPIRKA_TMP(std::string, video_file_front)
       ARISIN_ETUPIRKA_TMP(float, circle_x_distance_threshold)
       ARISIN_ETUPIRKA_TMP(bool, send_repeat_key_down_signal)
       ARISIN_ETUPIRKA_TMP(bool, recieve_repeat_key_down_signal)
