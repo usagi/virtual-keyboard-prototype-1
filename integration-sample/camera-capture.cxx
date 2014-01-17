@@ -9,21 +9,46 @@ namespace arisin
       , front_camera_id_(conf.camera_capture.front_camera_id)
       , width_(conf.camera_capture.width)
       , height_(conf.camera_capture.height)
+      , video_file_top_(conf.video_file_top)
+      , video_file_front_(conf.video_file_front)
     {
-      DLOG(INFO) << "top-cam-id(" << top_camera_id_ << ") front-cam-id(" << front_camera_id_ << ") width(" << width_ << ") height(" << height_ << ")";
+      DLOG(INFO) << "top-cam-id: "       << top_camera_id_;
+      DLOG(INFO) << "front-cam-id: "     << front_camera_id_;
+      DLOG(INFO) << "width: "            << width_;
+      DLOG(INFO) << "height: "           << height_;
+      DLOG(INFO) << "video-file-top: "   << video_file_top_;
+      DLOG(INFO) << "video-file-front: " << video_file_front_;
       
-      captures[top].set(CV_CAP_PROP_FRAME_HEIGHT, height_);
-      captures[top].set(CV_CAP_PROP_FRAME_WIDTH , width_);
-      DLOG(INFO) << "top-cam set height and width";
+      if(conf.video_file_top.empty())
+      {
+        captures[top].set(CV_CAP_PROP_FRAME_HEIGHT, height_);
+        captures[top].set(CV_CAP_PROP_FRAME_WIDTH , width_);
+        DLOG(INFO) << "top-cam set height and width";
+      }
       
-      captures[front].set(CV_CAP_PROP_FRAME_HEIGHT, height_);
-      captures[front].set(CV_CAP_PROP_FRAME_WIDTH , width_);
-      DLOG(INFO) << "front-cam set height and width";
+      if(conf.video_file_front.empty())
+      {
+        captures[front].set(CV_CAP_PROP_FRAME_HEIGHT, height_);
+        captures[front].set(CV_CAP_PROP_FRAME_WIDTH , width_);
+        DLOG(INFO) << "front-cam set height and width";
+      }
       
-      captures[top].open(top_camera_id_);
+      if(conf.video_file_top.empty())
+        captures[top].open(top_camera_id_);
+      else
+        captures[top].open(conf.video_file_top);
+      
+      if(!captures[top].isOpened())
+        LOG(FATAL) << "top-cam can not opened";
       DLOG(INFO) << "top-cam opened";
       
-      captures[front].open(front_camera_id_);
+      if(conf.video_file_front.empty())
+        captures[front].open(front_camera_id_);
+      else
+        captures[front].open(conf.video_file_front);
+        
+      if(!captures[front].isOpened())
+        LOG(FATAL) << "front-cam can not opened";
       DLOG(INFO) << "front-cam opened";
     }
     
@@ -40,6 +65,22 @@ namespace arisin
       captures[front] >> tmp;
       r.front = tmp.clone();
       DLOG(INFO) << "front-cam captured";
+      
+      if(!video_file_top_.empty() && captures[top].get(CV_CAP_PROP_POS_AVI_RATIO) == 1)
+      {
+        DLOG(INFO) << "top-cam to reload video file: " << video_file_top_;
+        captures[top].open(video_file_top_);
+        if(!captures[top].isOpened())
+          LOG(FATAL) << "top-cam can not opened";
+      }
+      
+      if(!video_file_front_.empty() && captures[front].get(CV_CAP_PROP_POS_AVI_RATIO) == 1)
+      {
+        DLOG(INFO) << "front-cam to reload video file: " << video_file_front_;
+        captures[front].open(video_file_front_);
+        if(!captures[front].isOpened())
+          LOG(FATAL) << "front-cam can not opened";
+      }
       
       return std::move(r);
     }

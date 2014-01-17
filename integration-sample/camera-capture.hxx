@@ -29,6 +29,8 @@ namespace arisin
       int front_camera_id_;
       int width_;
       int height_;
+      std::string video_file_top_;
+      std::string video_file_front_;
       
     public:
       camera_capture_t(const configuration_t& conf);
