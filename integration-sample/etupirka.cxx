@@ -6,6 +6,7 @@ namespace arisin
   {
     etupirka_t::etupirka_t(const configuration_t& conf)
       : conf_(conf)
+      , main_loop_wait_( std::chrono::duration_cast<std::chrono::nanoseconds>( std::chrono::seconds(1) / static_cast<long double>(conf.fps) ) )
     {
       DLOG(INFO) << "etupirka ctor";
       
@@ -14,6 +15,8 @@ namespace arisin
       commandline_helper_t::show_conf(conf, s);
       DLOG(INFO) << "conf.mode: \n" << s.str();
 #endif
+      
+      DLOG(INFO) << "main_loop_wait[ns]: " << main_loop_wait_.count();
     }
     
     void etupirka_t::run()
@@ -55,6 +58,8 @@ namespace arisin
       
       while(is_running_)
       {
+        const auto time_start = std::chrono::high_resolution_clock::now();
+        
         // topとfrontのカメラキャプチャー像を手に入れる。
         const auto captured_frames = (*camera_capture)();
         // topから指先群を検出する。
@@ -117,6 +122,15 @@ namespace arisin
         
         // 現在押されていたキー群を次のループでの前のキー押下状態として使えるように保存
         pressing_keys_before = pressing_keys;
+        
+        const auto time_delta = std::chrono::duration_cast<std::chrono::nanoseconds>( std::chrono::high_resolution_clock::now() - time_start );
+        DLOG(INFO) << "time_delta [ns]" << time_delta.count();
+        const auto time_wait = main_loop_wait_ - time_delta;
+        if(time_wait.count() > 0)
+        {
+          DLOG(INFO) << "time_wait [ns]" << time_wait.count();
+          std::this_thread::sleep_for(time_wait);
+        }
       }
       
       DLOG(INFO) << "exit main loop";
@@ -132,8 +146,19 @@ namespace arisin
       
       while(is_running_)
       {
+        const auto time_start = std::chrono::high_resolution_clock::now();
+        
         const auto key_signal = (*udp_reciever)();
         (*key_invoker)(key_signal.code_state.code, WonderRabbitProject::key::writer_t::state_t(key_signal.code_state.state));
+        
+        const auto time_delta = std::chrono::duration_cast<std::chrono::nanoseconds>( std::chrono::high_resolution_clock::now() - time_start );
+        DLOG(INFO) << "time_delta [ns]" << time_delta.count();
+        const auto time_wait = main_loop_wait_ - time_delta;
+        if(time_wait.count() > 0)
+        {
+          DLOG(INFO) << "time_wait [ns]" << time_wait.count();
+          std::this_thread::sleep_for(time_wait);
+        }
       }
       
       DLOG(INFO) << "exit main loop";

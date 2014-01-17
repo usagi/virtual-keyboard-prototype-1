@@ -1,5 +1,7 @@
 #pragma once
 
+#include <thread>
+#include <chrono>
 #include <string>
 #ifndef NDEBUG
   #include <sstream>
@@ -41,6 +43,7 @@ namespace arisin
       
       configuration_t conf_;
       bool is_running_ = false;
+      std::chrono::nanoseconds main_loop_wait_;
       
       std::unique_ptr<camera_capture_t>   camera_capture;
       std::unique_ptr<finger_detector_t>  finger_detector_top;
