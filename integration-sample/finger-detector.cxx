@@ -171,7 +171,7 @@ namespace arisin
     const cv::Mat& finger_detector_t::effected_frame() const
     { return pre_nail_frame; }
     
-    finger_detector_t::circles_t finger_detector_t::operator()(const cv::Mat& frame) const
+    finger_detector_t::circles_t finger_detector_t::operator()(const cv::Mat& frame)
     {
       cv::Mat bilateral_frame;
       bilateralFilter(frame, bilateral_frame, pre_bilateral_d_, pre_bilateral_sc_, pre_bilateral_ss_);

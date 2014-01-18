@@ -73,7 +73,7 @@ namespace arisin
       
       const cv::Mat& effected_frame() const;
       
-      circles_t operator()(const cv::Mat& frame) const;
+      circles_t operator()(const cv::Mat& frame);
     };
   }
 }
