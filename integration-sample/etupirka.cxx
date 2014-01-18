@@ -48,6 +48,7 @@ namespace arisin
     
     void etupirka_t::run_main()
     {
+      DLOG(INFO) << "to initialize";
       initialize();
       
       is_running_ = true;
@@ -60,16 +61,23 @@ namespace arisin
       {
         const auto time_start = std::chrono::high_resolution_clock::now();
         
+        DLOG(INFO) << "to camera_capture()";
         // topとfrontのカメラキャプチャー像を手に入れる。
         const auto captured_frames = (*camera_capture)();
+        DLOG(INFO) << "to finger_detector_top()";
         // topから指先群を検出する。
         const auto circles_top   = (*finger_detector_top  )(captured_frames.top  );
+        DLOG(INFO) << "circles_top.size(): " << circles_top.size();
+        DLOG(INFO) << "to finger_detector_front()";
         // frontから指先群を検出する。
         const auto circles_front = (*finger_detector_front)(captured_frames.front);
+        DLOG(INFO) << "circles_front.size(): " << circles_front.size();
         
+        DLOG(INFO) << "to virtual_keyboard->reset()";
         // 仮想キーボードの状態をリセット
         virtual_keyboard->reset();
             
+        DLOG(INFO) << "to for(circles_top)";
         // topの検出円群をforで回す
         for(const auto& ct : circles_top)
         {
@@ -85,40 +93,59 @@ namespace arisin
           
           // 一番近い子をとりあえずcfとして迎え入れる。
           const auto& cf = *x_distance_min_element;
+          DLOG(INFO) << "x-distance(ct, cf): " << d(ct[0], cf[0]);
           
           // X座標距離に判定のしきい値を適用する
           if(d(ct[0], cf[0]) <= conf_.circle_x_distance_threshold)
           {
             // 3次元空間における座標が求まる
             const auto real_position = (*space_converter)({ct[0], ct[1] + ct[2]}, {cf[0], cf[1] + cf[2]});
+            DLOG(INFO) << "estimated real_position: (" << real_position[0] << "," << real_position[1] << "," << real_position[2] << ")";
+            DLOG(INFO) << "to virtual_keyboard->add_test()";
             // 仮想キーボードの押下テスト＆もしかしたらシグナル追加
             virtual_keyboard->add_test(real_position[0], real_position[1], real_position[2]);
-            
           }
         }
         
+        DLOG(INFO) << "to virtual_keyboard->pressing_keys()";
         // 仮想キーボードの状態を取得
         const auto pressing_keys = virtual_keyboard->pressing_keys();
         
         if(conf_.send_repeat_key_down_signal)
+        {
+          DLOG(INFO) << "to send key-down all";
           // 押されているキーを全て
           for(const auto pressing_key : pressing_keys)
+          {
+            DLOG(INFO) << "to udp_sender(); key-down signal: " << pressing_key;
             // UDP送出する
             (*udp_sender)(key_signal_t(uint32_t(pressing_key), uint8_t(WonderRabbitProject::key::writer_t::state_t::down)));
+          }
+        }
         else
+        {
+          DLOG(INFO) << "to send key-down without before downed";
           // 押されているキーのうち、
           for(const auto pressing_key : pressing_keys)
             // 前回押されていなかったキーのみ
             if(std::find(std::begin(pressing_keys_before), std::end(pressing_keys_before), pressing_key) == std::end(pressing_keys_before))
+            {
+              DLOG(INFO) << "to udp_sender(); key-down signal: " << pressing_key;
               // UDP送出する
               (*udp_sender)(key_signal_t(uint32_t(pressing_key), uint8_t(WonderRabbitProject::key::writer_t::state_t::down)));
+            }
+        }
         
+        DLOG(INFO) << "to send key-up";
         // 前回のキー押下状態を全てforで回し
         for(const auto pressing_key_before : pressing_keys_before)
           // 離されたキーを検出して
           if(std::find(std::begin(pressing_keys), std::end(pressing_keys), pressing_key_before) == std::end(pressing_keys))
+          {
+            DLOG(INFO) << "to udp_sender(); key-up signal: " << pressing_key_before;
             // UDP送出する
             (*udp_sender)(key_signal_t(uint32_t(pressing_key_before), uint8_t(WonderRabbitProject::key::writer_t::state_t::up)));
+          }
         
         // 現在押されていたキー群を次のループでの前のキー押下状態として使えるように保存
         pressing_keys_before = pressing_keys;
