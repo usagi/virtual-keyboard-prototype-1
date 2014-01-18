@@ -2,6 +2,7 @@
 
 #include <string>
 
+#include <boost/array.hpp>
 #include <boost/asio.hpp>
 
 #include "configuration.hxx"
