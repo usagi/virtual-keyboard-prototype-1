@@ -21,22 +21,22 @@ namespace arisin
       using a2d_t = std::array<float_t, 2>;
     
     private:
-      template<class T> constexpr typename T::value_type x(const T& a) { return a[0]; }
-      template<class T> constexpr typename T::value_type y(const T& a) { return a[1]; }
-      template<class T> constexpr typename T::value_type z(const T& a) { return a[2]; }
+      template<class T> static constexpr typename T::value_type x(const T& a) { return a[0]; }
+      template<class T> static constexpr typename T::value_type y(const T& a) { return a[1]; }
+      template<class T> static constexpr typename T::value_type z(const T& a) { return a[2]; }
       
       template<class T_in_out, class T_internal = float_t>
-      constexpr T_in_out degrees_to_radians(T_in_out degrees)
+      static constexpr T_in_out degrees_to_radians(T_in_out degrees)
       { return T_internal(degrees) * boost::math::constants::pi<T_internal>() / T_internal(180); }
       
       template<class T_in_out, class T_internal = float_t>
-      constexpr T_in_out radians_to_degrees(T_in_out radians)
+      static constexpr T_in_out radians_to_degrees(T_in_out radians)
       { return T_internal(radians) * T_internal(180) / boost::math::constants::pi<T_internal>(); }
 
-      template<class T> constexpr T pow2(const T v){ return v * v; }
-      template<class T> constexpr T diagonal(const T a, const T b){ return std::sqrt( pow2(a) + pow2(b) ); }
+      template<class T> static constexpr T pow2(const T v){ return v * v; }
+      template<class T> static constexpr T diagonal(const T a, const T b){ return std::sqrt( pow2(a) + pow2(b) ); }
 
-      template<class T> constexpr T uvalue_to_snorm(const T v, const T max)
+      template<class T> static constexpr T uvalue_to_snorm(const T v, const T max)
       { return (v - (max / 2)) / (max / 2); }
       
       template<class T>

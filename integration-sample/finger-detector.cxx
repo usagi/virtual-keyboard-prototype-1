@@ -1,5 +1,92 @@
 #include "finger-detector.hxx"
 
+#include <algorithm>
+#include <memory>
+#include <limits>
+#include <cassert>
+
+namespace
+{
+  // in[0]: source
+  // in[1]: unorm_map
+  // out  : cross-ed result
+  template<class T_a_pixel, class T_b_pixel>
+  cv::Mat cv_mat_cross_with_unorm(const cv::Mat& a, const cv::Mat& b)
+  {
+    if(a.total() != b.total())
+      throw std::logic_error("a.total() != b.total()");
+    
+    cv::Mat r(a.rows, a.cols, a.type());
+    
+    const auto ia = a.begin<T_a_pixel>();
+    const auto ea = a.end  <T_a_pixel>();
+    const auto ib = b.begin<T_b_pixel>();
+    const auto ir = r.begin<T_a_pixel>();
+    
+    auto op = [&](T_a_pixel ap, const T_b_pixel bp)
+    {
+      auto p = &ap.x;
+      const auto e = p + (sizeof(T_a_pixel) / sizeof(typename T_a_pixel::value_type));
+      while(p < e)
+        *p++ *= bp;
+      return std::move(ap);
+    };
+    
+    std::transform(ia, ea, ib, ir, op);
+    
+    return std::move(r);
+  }
+  
+  // in : cv::Mat<CV_32FC3(HSV96)>
+  // out: cv::Mat<CV_8UC1(B1)>
+  cv::Mat filter_hsv_from_HSV96
+  ( const cv::Mat& src
+  , const float h_min, const float h_max
+  , const float s_min, const float s_max
+  , const float v_min, const float v_max
+  )
+  {
+    cv::Mat dst(src.rows, src.cols, CV_8UC1);
+    
+    using result_element_t = uint8_t;
+    using pixel_t = cv::Point3f;
+    
+    const auto isrc = src.begin<pixel_t>();
+    const auto esrc = src.end  <pixel_t>();
+    auto       idst = dst.begin<result_element_t>();
+    
+    std::transform(isrc, esrc, idst, [&](const pixel_t& p)
+    {
+      return
+      (
+        ( ( p.x >= h_min && p.x <= h_max ) || ( h_max > 360.f &&  ( p.x >= h_min || p.x <= h_max - 360.f ) ) )
+        &&  p.y >= s_min && p.y <= s_max
+        &&  p.z >= v_min && p.z <= v_max
+      )
+        ? 1 // std::numeric_limits<result_element_t>::max
+        : 0 // std::numeric_limits<result_element_t>::min
+        ;
+    });
+    
+    return std::move(dst);
+  }
+  
+  // in : cv::Mat<CV_8UC3(BGR24)>
+  // out: cv::Mat<CV_8UC1(B1)>
+  cv::Mat filter_hsv_from_BGR24
+  ( const cv::Mat& src
+  , const float h_min, const float h_max
+  , const float s_min, const float s_max
+  , const float v_min, const float v_max
+  )
+  {
+    cv::Mat hsv;
+    src.convertTo(hsv, CV_32F);
+    cv::cvtColor(hsv, hsv, CV_BGR2HSV);
+    return filter_hsv_from_HSV96(hsv, h_min, h_max, s_min, s_max, v_min, v_max);
+  }
+}
+
 namespace arisin
 {
   namespace etupirka
