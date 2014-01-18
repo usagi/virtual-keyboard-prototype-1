@@ -21,10 +21,14 @@ namespace arisin
     void udp_sender_t::operator()(const key_signal_t& key_signal)
     {
       DLOG(INFO) << "key_signal code, state: " << key_signal.code_state.code << "," << key_signal.code_state.state;
+      
+      using buffer_t = boost::array<decltype(key_signal.char_array)::value_type, sizeof(key_signal.char_array) / sizeof(decltype(key_signal.char_array)::value_type)>;
+      const buffer_t& buffer( *reinterpret_cast<const buffer_t*>( key_signal.char_array.data()) );
+      
 #ifndef NDEBUG
       auto n =
 #endif
-      socket.send_to(boost::asio::buffer(key_signal.char_array), endpoint);
+      socket.send_to(boost::asio::buffer(buffer), endpoint);
       DLOG(INFO) << "message sent [bytes]: " << n;
     }
     
