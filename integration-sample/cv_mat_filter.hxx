@@ -70,7 +70,7 @@ namespace
     
     return std::move(dst);
   }
-  
+  /*
   // in : cv::Mat<CV_8UC3(BGR24)>
   // out: cv::Mat<CV_8UC1(B1)>
   cv::Mat filter_hsv_from_BGR24
@@ -85,7 +85,8 @@ namespace
     cv::cvtColor(hsv, hsv, CV_BGR2HSV);
     return filter_hsv_from_HSV96(hsv, h_min, h_max, s_min, s_max, v_min, v_max);
   }
-
+  */
+  /*
   // in : cv::Mat<CV_32FC3(HSV96)>
   // out: [ H[value([0.f-360.f)), count], S[value([0.f-1.f]), count], V[value[0-255], count] >
   inline std::array<std::map<float, size_t>, 3> cv_mat_hsv_hist_from_HSV96(const cv::Mat& m)
@@ -111,6 +112,7 @@ namespace
     
     return std::move(r);
   }
+  */
   /*
   // in : cv::Mat<CV_8UC3(BGR24)>
   // out: [ H[value([0.f-360.f)), count], S[value([0.f-1.f]), count], V[value[0-255], count] >

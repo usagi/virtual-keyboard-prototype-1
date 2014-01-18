@@ -99,7 +99,7 @@ namespace arisin
           if(d(ct[0], cf[0]) <= conf_.circle_x_distance_threshold)
           {
             // 3次元空間における座標が求まる
-            const auto real_position = (*space_converter)({ct[0], ct[1] + ct[2]}, {cf[0], cf[1] + cf[2]});
+            const auto real_position = (*space_converter)({{ct[0], ct[1] + ct[2]}}, {{cf[0], cf[1] + cf[2]}});
             DLOG(INFO) << "estimated real_position: (" << real_position[0] << "," << real_position[1] << "," << real_position[2] << ")";
             DLOG(INFO) << "to virtual_keyboard->add_test()";
             // 仮想キーボードの押下テスト＆もしかしたらシグナル追加
