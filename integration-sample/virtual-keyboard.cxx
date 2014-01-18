@@ -12,14 +12,13 @@ namespace arisin
         ( "select id"
           " from " + conf.virtual_keyboard.table +
           " where"
-          " x <= ? and x + w >= ?"
-          " y <= ? and y + h >= ?"
+          " x <= ? and x + w >= ? and"
+          " y <= ? and y + h >= ? and"
           " s <= ?"
         )
       )
     {
       DLOG(INFO) << "database(" << database_ << ") table(" << table_ << ")";
-      
       load_x_shift();
     }
     
@@ -27,7 +26,9 @@ namespace arisin
     {
       const auto sql = std::string("select max(x+w) from ") + table();
       DLOG(INFO) << "SQL: " << sql;
+      
       x_shift_ = - std::get<0>(database_object.execute_data<double>(sql)[0]) / 2.;
+      DLOG(INFO) << "x_shift_: " << x_shift_;
     }
     
     void virtual_keyboard_t::reset()

@@ -19,9 +19,9 @@ namespace arisin
       WonderRabbitProject::SQLite3::sqlite3_t database_object;
       std::string database_;
       std::string table_;
+      WonderRabbitProject::SQLite3::prepare_t statement;
       pressing_keys_t pressing_keys_;
       double x_shift_;
-      WonderRabbitProject::SQLite3::prepare_t statement;
       
     public:
       explicit virtual_keyboard_t(const configuration_t& conf);

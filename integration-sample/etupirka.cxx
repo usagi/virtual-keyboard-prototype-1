@@ -170,11 +170,17 @@ namespace arisin
       switch(conf_.mode)
       {
         case mode_t::main:
+          DLOG(INFO) << "to initialize camera_capture";
           camera_capture.reset(new camera_capture_t(conf_));
+          DLOG(INFO) << "to initialize finger_detector_top";
           finger_detector_top.reset(new finger_detector_t(conf_, true));
+          DLOG(INFO) << "to initialize finger_detector_front";
           finger_detector_front.reset(new finger_detector_t(conf_, false));
+          DLOG(INFO) << "to initialize space_converter";
           space_converter.reset(new space_converter_t(conf_));
+          DLOG(INFO) << "to initialize virtual_keyboard";
           virtual_keyboard.reset(new virtual_keyboard_t(conf_));
+          DLOG(INFO) << "to initialize udp_sender";
           udp_sender.reset(new udp_sender_t(conf_));
           udp_reciever.reset(nullptr);
           key_invoker.reset(nullptr);
@@ -187,7 +193,9 @@ namespace arisin
           space_converter.reset(nullptr);
           virtual_keyboard.reset(nullptr);
           udp_sender.reset(nullptr);
+          DLOG(INFO) << "to initialize udp_reciever";
           udp_reciever.reset(new udp_reciever_t(conf_));
+          DLOG(INFO) << "to initialize key_invoker";
           key_invoker.reset(new key_invoker_t(conf_));
           break;
           
@@ -201,6 +209,8 @@ namespace arisin
           udp_reciever.reset(nullptr);
           key_invoker.reset(nullptr);
       }
+
+      DLOG(INFO) << "done initialize all submodules";
       
       DLOG(INFO) << camera_capture.get();
       DLOG(INFO) << finger_detector_top.get();
