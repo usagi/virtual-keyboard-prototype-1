@@ -177,6 +177,12 @@ namespace arisin
             catch(const std::exception& e) { LOG(ERROR) << "catch exception: " << e.what(); }
             continue;
             
+          case h("-G"):
+          case h("--gui"):
+            try { conf.gui = true; }
+            catch(const std::exception& e) { LOG(ERROR) << "catch exception: " << e.what(); }
+            continue;
+            
           case h("-h"):
           case h("--help"):
             show_help();
@@ -244,6 +250,9 @@ namespace arisin
         "    [-F|--fps] (fps:int)\n"
         "      set main-loop fps[frames/sec] to (fps:int).\n"
         "\n"
+        "    [-G|--gui]\n"
+        "      set enable GUI.\n"
+        "\n"
         "<Usage 4> ./etupirka (-d|--default-conf)\n"
         "  show etupirka default configuration and exit.\n"
         "  if you want save to file: `./etupirka -d > etupirka.conf`"
@@ -272,6 +281,7 @@ namespace arisin
       boost::property_tree::ptree p;
       
       p.put("mode", to_string(conf.mode));
+      p.put("gui", conf.gui);
       p.put("fps", conf.fps);
       p.put("video_file_top", conf.video_file_top);
       p.put("video_file_front", conf.video_file_front);
@@ -351,6 +361,7 @@ namespace arisin
 #define ARISIN_ETUPIRKA_TMP(T,N) \
       if(const auto v = p.get_optional<T>( #N )) conf. N = v.get();
       ARISIN_ETUPIRKA_TMP(int, fps)
+      ARISIN_ETUPIRKA_TMP(bool, gui)
       ARISIN_ETUPIRKA_TMP(std::string, video_file_top)
       ARISIN_ETUPIRKA_TMP(std::string, video_file_front)
       ARISIN_ETUPIRKA_TMP(float, circle_x_distance_threshold)
@@ -417,6 +428,8 @@ namespace arisin
       return
         {
           mode_t::none
+        
+        , false
         
         , 30
         
