@@ -3,7 +3,6 @@
 #include <string>
 
 #include <boost/asio.hpp>
-#include <boost/program_options.hpp>
 
 #include "configuration.hxx"
 #include "logger.hxx"
