@@ -31,6 +31,7 @@ add_executable(etupirka
   udp-sender.cxx
   udp-reciever.cxx
   key-invoker.cxx
+  gui.cxx
 )
 
 add_custom_command(TARGET etupirka POST_BUILD

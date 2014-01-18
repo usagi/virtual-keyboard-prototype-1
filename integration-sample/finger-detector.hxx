@@ -54,6 +54,8 @@ namespace arisin
       int circles_min_radius_;
       int circles_max_radius_;
       
+      cv::Mat pre_nail_frame;
+      
     public:
       using circles_t = std::vector<cv::Vec3f>;
       
@@ -68,6 +70,8 @@ namespace arisin
       void set_nail_morphology(int n);
       void set_nail_median_blur(int ksize);
       void set_circles(double dp, double min_dist, double param_1, double param_2, int min_radius, int max_radius);
+      
+      const cv::Mat& effected_frame() const;
       
       circles_t operator()(const cv::Mat& frame) const;
     };

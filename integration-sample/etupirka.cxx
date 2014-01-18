@@ -64,10 +64,19 @@ namespace arisin
         DLOG(INFO) << "to camera_capture()";
         // topとfrontのカメラキャプチャー像を手に入れる。
         const auto captured_frames = (*camera_capture)();
+        
+        if(conf_.gui)
+        {
+          DLOG(INFO) << "propagate conf to finger_detector_top/front";
+          finger_detector_top->set(conf_.finger_detector_top);
+          finger_detector_front->set(conf_.finger_detector_front);
+        }
+        
         DLOG(INFO) << "to finger_detector_top()";
         // topから指先群を検出する。
         const auto circles_top   = (*finger_detector_top  )(captured_frames.top  );
         DLOG(INFO) << "circles_top.size(): " << circles_top.size();
+        
         DLOG(INFO) << "to finger_detector_front()";
         // frontから指先群を検出する。
         const auto circles_front = (*finger_detector_front)(captured_frames.front);
@@ -150,6 +159,12 @@ namespace arisin
         // 現在押されていたキー群を次のループでの前のキー押下状態として使えるように保存
         pressing_keys_before = pressing_keys;
         
+        if(conf_.gui)
+        {
+          DLOG(INFO) << "gui()";
+          (*gui)({captured_frames.top, captured_frames.front, finger_detector_top->effected_frame(), finger_detector_front->effected_frame(), circles_top, circles_front});
+        }
+        
         const auto time_delta = std::chrono::duration_cast<std::chrono::nanoseconds>( std::chrono::high_resolution_clock::now() - time_start );
         DLOG(INFO) << "time_delta [ns]" << time_delta.count();
         const auto time_wait = main_loop_wait_ - time_delta;
@@ -211,6 +226,7 @@ namespace arisin
           udp_sender.reset(new udp_sender_t(conf_));
           udp_reciever.reset(nullptr);
           key_invoker.reset(nullptr);
+          gui.reset( conf_.gui ? new gui_t(conf_) : nullptr);
           break;
           
         case mode_t::reciever:
@@ -224,6 +240,7 @@ namespace arisin
           udp_reciever.reset(new udp_reciever_t(conf_));
           DLOG(INFO) << "to initialize key_invoker";
           key_invoker.reset(new key_invoker_t(conf_));
+          gui.reset(nullptr);
           break;
           
         default:
@@ -235,6 +252,7 @@ namespace arisin
           udp_sender.reset(nullptr);
           udp_reciever.reset(nullptr);
           key_invoker.reset(nullptr);
+          gui.reset(nullptr);
       }
 
       DLOG(INFO) << "done initialize all submodules";

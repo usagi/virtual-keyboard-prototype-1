@@ -18,6 +18,7 @@
 #include "udp-sender.hxx"
 #include "udp-reciever.hxx"
 #include "key-invoker.hxx"
+#include "gui.hxx"
 #include "logger.hxx"
 
 // created by arisin: https://github.com/arisin
@@ -53,6 +54,8 @@ namespace arisin
       std::unique_ptr<udp_sender_t>       udp_sender;
       std::unique_ptr<udp_reciever_t>     udp_reciever;
       std::unique_ptr<key_invoker_t>      key_invoker;
+      
+      std::unique_ptr<gui_t>              gui;
       
     public:
       explicit etupirka_t(const configuration_t& conf);

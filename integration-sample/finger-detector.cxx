@@ -168,6 +168,9 @@ namespace arisin
       DLOG(INFO) << "set_circles dp, min_dist, param_1, param_2, min_radius, max_radius: " << dp << ", " << min_dist << ", " << param_1 << ", " << param_2 << ", " << min_radius << ", " << max_radius;
     }
     
+    const cv::Mat& finger_detector_t::effected_frame() const
+    { return pre_nail_frame; }
+    
     finger_detector_t::circles_t finger_detector_t::operator()(const cv::Mat& frame) const
     {
       cv::Mat bilateral_frame;
@@ -187,7 +190,7 @@ namespace arisin
       cv::Mat hsv_frame;
       hsv_frame = cv_mat_cross_with_unorm<cv::Point3_<uint8_t>, uint8_t>(morphology_frame, hsv_filtered_map);
       
-      cv::Mat pre_nail_frame;
+      //cv::Mat pre_nail_frame;
       {
         // hsv split and get h-channel frame
         cv::Mat h_channel_frame;
