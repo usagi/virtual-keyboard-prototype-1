@@ -65,13 +65,6 @@ namespace arisin
         // topとfrontのカメラキャプチャー像を手に入れる。
         const auto captured_frames = (*camera_capture)();
         
-        if(conf_.gui)
-        {
-          DLOG(INFO) << "propagate conf to finger_detector_top/front";
-          finger_detector_top->set(conf_.finger_detector_top);
-          finger_detector_front->set(conf_.finger_detector_front);
-        }
-        
         DLOG(INFO) << "to finger_detector_top()";
         // topから指先群を検出する。
         const auto circles_top   = (*finger_detector_top  )(captured_frames.top  );
@@ -163,6 +156,18 @@ namespace arisin
         {
           DLOG(INFO) << "gui()";
           (*gui)({captured_frames.top, captured_frames.front, finger_detector_top->effected_frame(), finger_detector_front->effected_frame(), circles_top, circles_front});
+          
+          DLOG(INFO) << "propagate conf to finger_detector_top/front";
+          if(gui->current_is_top())
+          {
+            DLOG(INFO) << "set to top";
+            finger_detector_top->set(gui->current_finger_detector_conf());
+          }
+          else
+          {
+            DLOG(INFO) << "set to front";
+            finger_detector_front->set(gui->current_finger_detector_conf());
+          }
         }
         
         const auto time_delta = std::chrono::duration_cast<std::chrono::nanoseconds>( std::chrono::high_resolution_clock::now() - time_start );

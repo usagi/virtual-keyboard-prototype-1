@@ -188,7 +188,10 @@ namespace arisin
     { return current_finger_detector_conf_; }
     
     const bool gui_t::current_is_top() const
-    { return prev_top_front_switch; }
+    {
+      auto& cv_gui_helper = cv_gui_helper_t::instance();
+      return cv_gui_helper.trackbar<int>(trackbar::top_front_switch, window::controller_1) == 0;
+    }
     
   }
 }
