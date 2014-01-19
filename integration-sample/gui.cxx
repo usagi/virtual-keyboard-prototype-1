@@ -120,18 +120,18 @@ namespace arisin
       if(prev_top_front_switch != cv_gui_helper.trackbar<int>(trackbar::top_front_switch, window::controller_1))
       {
         DLOG(INFO) << "top_front_switch changed";
-        load_conf(bool(cv_gui_helper.trackbar<int>(trackbar::top_front_switch, window::controller_1)));
+        load_conf(bool(cv_gui_helper.trackbar<int>(trackbar::top_front_switch, window::controller_1) == 0));
       }
       
       if(cv_gui_helper.trackbar<int>(trackbar::save, window::controller_1))
       {
-        save_conf();
+        save_conf(cv_gui_helper.trackbar<int>(trackbar::top_front_switch, window::controller_1) == 0);
         cv_gui_helper.trackbar(trackbar::save, window::controller_1, 0);
       }
       
       if(cv_gui_helper.trackbar<int>(trackbar::load, window::controller_1))
       {
-        load_conf();
+        load_conf(cv_gui_helper.trackbar<int>(trackbar::top_front_switch, window::controller_1) == 0);
         cv_gui_helper.trackbar(trackbar::load, window::controller_1, 0);
       }
       
