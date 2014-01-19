@@ -274,10 +274,20 @@ namespace arisin
       show_conf(load_default());
     }
     
+    void commandline_helper_t::save_conf(const configuration_t& conf, const std::string& filename)
+    {
+      DLOG(INFO) << "save_conf";
+      boost::property_tree::write_ini(filename, boost_ptree(conf));
+    }
+    
     void commandline_helper_t::show_conf(const configuration_t& conf, std::ostream& out)
     {
       DLOG(INFO) << "show_conf";
-      
+      boost::property_tree::write_ini(out, boost_ptree(conf));
+    }
+    
+    boost::property_tree::ptree commandline_helper_t::boost_ptree(const configuration_t& conf)
+    {
       boost::property_tree::ptree p;
       
       p.put("mode", to_string(conf.mode));
@@ -340,7 +350,7 @@ namespace arisin
       p.put("udp_sender.port", conf.udp_sender.port);
       p.put("udp_reciever.port", conf.udp_reciever.port);
       
-      boost::property_tree::write_ini(out, p);
+      return p;
     }
     
     void commandline_helper_t::load_file(configuration_t& conf, const std::string& filename)

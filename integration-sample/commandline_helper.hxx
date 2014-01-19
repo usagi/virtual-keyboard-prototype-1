@@ -26,9 +26,11 @@ namespace arisin
       static configuration_t interpret(const std::vector<std::string>& arguments);
       static void show_help();
       static void show_conf(const configuration_t& conf, std::ostream& out = std::cout);
+      static void save_conf(const configuration_t& conf, const std::string& filename = "etupirka.conf");
       static void show_default();
       static configuration_t load_default();
       static void load_file(configuration_t& conf, const std::string& filename = "etupirka.conf");
+      static boost::property_tree::ptree boost_ptree(const configuration_t& conf);
     };
   }
 }

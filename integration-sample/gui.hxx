@@ -5,6 +5,7 @@
 #include <opencv2/highgui/highgui.hpp>
 
 #include "configuration.hxx"
+//#include "commandline_helper.hxx"
 #include "finger-detector.hxx"
 
 namespace arisin
@@ -27,12 +28,17 @@ namespace arisin
       , morphology_repeat
       , h_min, h_max, s_min, s_max, v_min, v_max
       , nail_morphology, nail_median_blur
-      , nail_circle_dp, nail_circle_min_dist
-      , nail_circle_param_1, nail_circle_param_2
-      , nail_circle_min_radius, nail_circle_max_radius
+      , nail_circles_dp, nail_circles_min_dist
+      , nail_circles_param_1, nail_circles_param_2
+      , nail_circles_min_radius, nail_circles_max_radius
       };
       
       configuration_t& conf_;
+      configuration_t::finger_detector_configuration_t current_finger_detector_conf_;
+      int prev_top_front_switch;
+      
+      void save_conf(bool is_top = true);
+      void load_conf(bool is_top = true);
       
     public:
       struct input_t
@@ -44,6 +50,9 @@ namespace arisin
       
       explicit gui_t(configuration_t& conf);
       void operator()(const input_t& input);
+      
+      const configuration_t::finger_detector_configuration_t& current_finger_detector_conf() const;
+      const bool current_is_top() const;
     };
   }
 }

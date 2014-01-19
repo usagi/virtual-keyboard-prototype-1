@@ -21,9 +21,9 @@ namespace
       std::string name;
       std::unique_ptr<int> pvalue;
       int visual_ratio;
-      long double real_ratio;
+      float real_ratio;
       
-      explicit trackbar_data_t(const std::string& trackbar_name, std::unique_ptr<int>&& pv, int visual_ratio_, long double real_ratio_)
+      explicit trackbar_data_t(const std::string& trackbar_name, std::unique_ptr<int>&& pv, int visual_ratio_, float real_ratio_)
         : name(trackbar_name)
         , pvalue(std::move(pv))
         , visual_ratio(visual_ratio_)
@@ -62,11 +62,11 @@ namespace
       T_trackbar_id trackbar_id;
       std::string trackbar_name;
       T_window_id window_id;
-      long double initial_value = 0;
+      float initial_value = 0;
       int max_value = 0;
       int visual_ratio;
-      long double real_ratio;
-      explicit new_trackbar_params_t(const T_trackbar_id trackbar_id_, const std::string& trackbar_name_, const T_window_id window_id_, const long double initial_value_, const int max_value_, const int visual_ratio_, const long double real_ratio_)
+      float real_ratio;
+      explicit new_trackbar_params_t(const T_trackbar_id trackbar_id_, const std::string& trackbar_name_, const T_window_id window_id_, const float initial_value_, const int max_value_, const int visual_ratio_, const float real_ratio_)
         : trackbar_id(trackbar_id_), trackbar_name(trackbar_name_), window_id(window_id_), initial_value(initial_value_), max_value(max_value_), visual_ratio(visual_ratio_), real_ratio(real_ratio_)
       {}
     };
@@ -77,7 +77,7 @@ namespace
     
     template<class T_trackbar_id, class T_window_id>
     inline new_trackbar_params_t<T_trackbar_id, T_window_id>
-    make_new_trackbar_params(T_trackbar_id trackbar_id, const std::string& trackbar_name, T_window_id window_id, long double initial_value, int max_value, int visual_ratio = 1, long double real_ratio = 1.l)
+    make_new_trackbar_params(T_trackbar_id trackbar_id, const std::string& trackbar_name, T_window_id window_id, float initial_value, int max_value, int visual_ratio = 1, float real_ratio = 1.l)
     { return new_trackbar_params_t<T_trackbar_id, T_window_id>(trackbar_id, trackbar_name, window_id, initial_value, max_value, visual_ratio, real_ratio); }
     
     template<class T>
@@ -178,7 +178,7 @@ namespace
     }
     
     template<class T_trackbar_id, class T_window_id>
-    inline void trackbar(const T_trackbar_id trackbar_id, const T_window_id window_id, int value, bool trackbar_refresh = true)
+    inline void trackbar(const T_trackbar_id trackbar_id, const T_window_id window_id, const int value, const bool trackbar_refresh = true)
     {
       *windows.at(int(window_id)).trackbars.at(int(trackbar_id)).pvalue = value;
       
@@ -186,6 +186,18 @@ namespace
       
       if(trackbar_refresh)
         cv::setTrackbarPos(std::get<0>(names), std::get<1>(names), value);
+    }
+    
+    template<class T ,class T_trackbar_id, class T_window_id>
+    inline void trackbar(const T_trackbar_id trackbar_id, const T_window_id window_id, const T value, const bool trackbar_refresh = true)
+    {
+      const auto& t = windows.at(int(window_id)).trackbars.at(int(trackbar_id));
+      *t.pvalue = value * t.visual_ratio / t.real_ratio;
+      
+      const auto names = trackbar_name(trackbar_id, window_id);
+      
+      if(trackbar_refresh)
+        cv::setTrackbarPos(std::get<0>(names), std::get<1>(names), *t.pvalue);
     }
     
     inline bool wait_key_not(char key, int wait_in_ms) const
