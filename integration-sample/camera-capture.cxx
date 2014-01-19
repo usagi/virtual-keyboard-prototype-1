@@ -66,17 +66,19 @@ namespace arisin
       r.front = tmp.clone();
       DLOG(INFO) << "front-cam captured";
       
-      if(!video_file_top_.empty() && captures[top].get(CV_CAP_PROP_POS_AVI_RATIO) == 1)
+      if(!video_file_top_.empty() && captures[top].get(CV_CAP_PROP_POS_FRAMES) == captures[top].get(CV_CAP_PROP_FRAME_COUNT))
       {
         DLOG(INFO) << "top-cam to reload video file: " << video_file_top_;
+        captures[top].release();
         captures[top].open(video_file_top_);
         if(!captures[top].isOpened())
           LOG(FATAL) << "top-cam can not opened";
       }
       
-      if(!video_file_front_.empty() && captures[front].get(CV_CAP_PROP_POS_AVI_RATIO) == 1)
+      if(!video_file_front_.empty() && captures[front].get(CV_CAP_PROP_POS_FRAMES) == captures[front].get(CV_CAP_PROP_FRAME_COUNT))
       {
         DLOG(INFO) << "front-cam to reload video file: " << video_file_front_;
+        captures[front].release();
         captures[front].open(video_file_front_);
         if(!captures[front].isOpened())
           LOG(FATAL) << "front-cam can not opened";
