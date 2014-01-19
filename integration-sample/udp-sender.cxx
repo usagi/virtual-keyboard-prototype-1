@@ -29,7 +29,9 @@ namespace arisin
       auto n =
 #endif
       socket.send_to(boost::asio::buffer(buffer), endpoint);
+#ifndef NDEBUG
       DLOG(INFO) << "message sent [bytes]: " << n;
+#endif
     }
     
     const std::string& udp_sender_t::address() const
