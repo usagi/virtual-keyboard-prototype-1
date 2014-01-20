@@ -26,24 +26,32 @@ namespace arisin
         LOG(WARNING) << "etupirka(" << this << ") is already running, return";
         return;
       }
-        
-      switch(conf_.mode)
+      
+      auto t = std::thread([&]()
       {
-        case mode_t::main:
-          DLOG(INFO) << "mode is main, to run_main";
-          run_main();
-          return;
-          
-        case mode_t::reciever:
-          DLOG(INFO) << "mode is reciever, to run_reciever";
-          run_reciever();
-          return;
-          
-        case mode_t::none:
-        default:
-          DLOG(INFO) << "mode is none, return";
-          return;
-      }
+        switch(conf_.mode)
+        {
+          case mode_t::main:
+            DLOG(INFO) << "mode is main, to run_main";
+            run_main();
+            return;
+            
+          case mode_t::reciever:
+            DLOG(INFO) << "mode is reciever, to run_reciever";
+            run_reciever();
+            return;
+            
+          case mode_t::none:
+          default:
+            DLOG(INFO) << "mode is none, return";
+            return;
+        }
+      });
+      
+      std::string buffer;
+      std::getline(std::cin, buffer);
+      is_running_ = false;
+      t.join();
     }
     
     void etupirka_t::run_main()
