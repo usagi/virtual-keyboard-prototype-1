@@ -78,8 +78,12 @@ endif()
 
 find_package(PkgConfig REQUIRED)
 
-pkg_search_module(LIBSQLITE3 REQUIRED sqlite3)
-message(STATUS "libsqlite3: ${LIBSQLITE3_LIBRARIES}")
+if(APPLE)
+  find_library(LIBSQLITE3_LIBRARIES NAMES sqlite3 HINTS /opt/local/lib)
+else()
+  pkg_search_module(LIBSQLITE3 REQUIRED sqlite3)
+  message(STATUS "libsqlite3: ${LIBSQLITE3_LIBRARIES}")
+endif()
 
 target_link_libraries(etupirka
   ${CMAKE_THREAD_LIBS_INIT}
