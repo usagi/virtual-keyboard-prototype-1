@@ -45,7 +45,12 @@ include_directories(
 )
 
 find_package(Threads REQUIRED)
-find_package(Boost 1.49.0 REQUIRED system program_options)
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.8)
+  message(STATUS "GCC<4.8: link boost(system thread)")
+  find_package(Boost 1.49.0 REQUIRED system thread)
+else()
+  find_package(Boost 1.49.0 REQUIRED system)
+endif()
 find_package(OpenCV REQUIRED)
 
 find_file(LIBWRPSQLITE3 WonderRabbitProject/SQLite3.hpp
@@ -87,8 +92,7 @@ endif()
 
 target_link_libraries(etupirka
   ${CMAKE_THREAD_LIBS_INIT}
-  ${Boost_SYSTEM_LIBRARY}
-  ${Boost_PROGRAM_OPTIONS_LIBRARY}
+  ${Boost_LIBRARIES}
   ${SQLITE3_LIB}
   ${OpenCV_LIBS}
   ${LIBSQLITE3_LIBRARIES}

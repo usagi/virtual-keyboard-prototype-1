@@ -8,7 +8,9 @@
 #endif
 #include <stdexcept>
 #include <boost/range/algorithm.hpp>
-
+#if __GNUC__ == 4 &&  __GNUC_MINOR__ < 8
+  #include <boost/thread/thread.hpp>
+#endif
 #include "configuration.hxx"
 #include "commandline_helper.hxx"
 #include "camera-capture.hxx"
