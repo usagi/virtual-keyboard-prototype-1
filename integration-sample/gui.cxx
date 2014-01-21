@@ -104,8 +104,8 @@ namespace arisin
       current_finger_detector_conf_.pre_morphology_n = cv_gui_helper.trackbar(trackbar::morphology_repeat, window::controller_1);
       current_finger_detector_conf_.hsv_h_min = cv_gui_helper.trackbar<double>(trackbar::h_min, window::controller_2);
       current_finger_detector_conf_.hsv_h_max = cv_gui_helper.trackbar<double>(trackbar::h_max, window::controller_2);
-      current_finger_detector_conf_.hsv_s_min = cv_gui_helper.trackbar<double>(trackbar::s_min, window::controller_2); DLOG(INFO) << "xxx0: " << current_finger_detector_conf_.hsv_s_min;
-      current_finger_detector_conf_.hsv_s_max = cv_gui_helper.trackbar<double>(trackbar::s_max, window::controller_2); DLOG(INFO) << "xxx1: " << current_finger_detector_conf_.hsv_s_max;
+      current_finger_detector_conf_.hsv_s_min = cv_gui_helper.trackbar<double>(trackbar::s_min, window::controller_2);
+      current_finger_detector_conf_.hsv_s_max = cv_gui_helper.trackbar<double>(trackbar::s_max, window::controller_2);
       current_finger_detector_conf_.hsv_v_min = cv_gui_helper.trackbar<double>(trackbar::v_min, window::controller_2);
       current_finger_detector_conf_.hsv_v_max = cv_gui_helper.trackbar<double>(trackbar::v_max, window::controller_2);
       current_finger_detector_conf_.nail_morphology_n = cv_gui_helper.trackbar(trackbar::nail_morphology, window::controller_2);
