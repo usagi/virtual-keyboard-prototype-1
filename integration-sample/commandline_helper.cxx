@@ -378,6 +378,11 @@ namespace arisin
       ARISIN_ETUPIRKA_TMP(bool, send_repeat_key_down_signal)
       ARISIN_ETUPIRKA_TMP(bool, recieve_repeat_key_down_signal)
       
+      ARISIN_ETUPIRKA_TMP(double, camera_capture.top_camera_id)
+      ARISIN_ETUPIRKA_TMP(double, camera_capture.front_camera_id)
+      ARISIN_ETUPIRKA_TMP(double, camera_capture.width)
+      ARISIN_ETUPIRKA_TMP(double, camera_capture.height)
+      
       ARISIN_ETUPIRKA_TMP(double, finger_detector_top.pre_bilateral_d)
       ARISIN_ETUPIRKA_TMP(double, finger_detector_top.pre_bilateral_sc)
       ARISIN_ETUPIRKA_TMP(double, finger_detector_top.pre_bilateral_ss)
