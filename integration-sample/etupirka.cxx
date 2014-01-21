@@ -184,7 +184,7 @@ namespace arisin
         if(time_wait.count() > 0)
         {
           DLOG(INFO) << "time_wait [ns]" << time_wait.count();
-#if !define(__clang__) && __GNUC__ == 4 &&  __GNUC_MINOR__ < 8
+#if !defined(__clang__) && __GNUC__ == 4 &&  __GNUC_MINOR__ < 8
           boost::this_thread::sleep_for(*reinterpret_cast<const boost::chrono::nanoseconds*>(&time_wait));
 #else
           std::this_thread::sleep_for(time_wait);
@@ -216,7 +216,7 @@ namespace arisin
         if(time_wait.count() > 0)
         {
           DLOG(INFO) << "time_wait [ns]" << time_wait.count();
-#if !define(__clang__) && __GNUC__ == 4 &&  __GNUC_MINOR__ < 8
+#if !defined(__clang__) && __GNUC__ == 4 &&  __GNUC_MINOR__ < 8
           boost::this_thread::sleep_for(*reinterpret_cast<const boost::chrono::nanoseconds*>(&time_wait));
 #else
           std::this_thread::sleep_for(time_wait);
