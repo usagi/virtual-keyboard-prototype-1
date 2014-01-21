@@ -29,29 +29,31 @@ namespace arisin
       
       auto t = std::thread([&]()
       {
-        switch(conf_.mode)
-        {
-          case mode_t::main:
-            DLOG(INFO) << "mode is main, to run_main";
-            run_main();
-            return;
-            
-          case mode_t::reciever:
-            DLOG(INFO) << "mode is reciever, to run_reciever";
-            run_reciever();
-            return;
-            
-          case mode_t::none:
-          default:
-            DLOG(INFO) << "mode is none, return";
-            return;
-        }
+        std::string buffer;
+        std::getline(std::cin, buffer);
+        is_running_ = false;
       });
       
-      std::string buffer;
-      std::getline(std::cin, buffer);
-      is_running_ = false;
+      switch(conf_.mode)
+      {
+        case mode_t::main:
+          DLOG(INFO) << "mode is main, to run_main";
+          run_main();
+          break;
+          
+        case mode_t::reciever:
+          DLOG(INFO) << "mode is reciever, to run_reciever";
+          run_reciever();
+          break;
+          
+        case mode_t::none:
+        default:
+          DLOG(INFO) << "mode is none, return";
+      }
+      
       t.join();
+      
+      DLOG(INFO) << "exit main loop";
     }
     
     void etupirka_t::run_main()
@@ -191,8 +193,6 @@ namespace arisin
 #endif
         }
       }
-      
-      DLOG(INFO) << "exit main loop";
     }
     
     void etupirka_t::run_reciever()
@@ -223,8 +223,6 @@ namespace arisin
 #endif
         }
       }
-      
-      DLOG(INFO) << "exit main loop";
     }
     
     void etupirka_t::initialize()
