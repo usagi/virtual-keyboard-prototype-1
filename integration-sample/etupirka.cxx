@@ -1,4 +1,6 @@
 #include "etupirka.hxx"
+#include <boost/version.hpp>
+#include <boost/chrono.hpp>
 
 namespace
 {
