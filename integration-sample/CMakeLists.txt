@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.10)
+cmake_minimum_required(VERSION 2.8.9)
 project(etupirka)
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
