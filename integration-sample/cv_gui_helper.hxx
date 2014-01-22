@@ -123,7 +123,7 @@ namespace
       cv::moveWindow(window_name(id), width, height);
 #endif
     }
-    
+/*    
     template<class T>
     inline void present(const T id) const
     {
@@ -143,7 +143,7 @@ namespace
         cv::updateWindow(window.second.name);
 #endif
     }
-    
+*/
     inline void new_windows() { }
     
     template<class T_head, class... T_tails>
