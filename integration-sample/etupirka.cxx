@@ -21,7 +21,7 @@ namespace
   #if BOOST_VERSION >= 105000
       boost::this_thread::sleep_for(time_wait_boost);
   #else
-      const auto time_wait_boost_posix = boost::posix_time::microseconds(boost::chrono::duration_cast<boost::chrono::microseconds>(time_wait_boost));
+      const auto time_wait_boost_posix = boost::posix_time::microseconds(boost::chrono::duration_cast<boost::chrono::microseconds>(time_wait_boost).count());
       boost::this_thread::sleep(time_wait_boost_posix);
   #endif
 #else
