@@ -106,20 +106,42 @@ namespace
     
     template<class T>
     inline void resize(const T id, const int width, const int height)
-    { cv::resizeWindow(window_name(id), width, height); }
+    {
+#if CV_MAJOR_VERSION < 2 || ( CV_MAJOR_VERSION == 2 && CV_MINOR_VERSION < 4)
+      cvResizeWindow(window_name(id).data(), width, height);
+#else
+      cv::resizeWindow(window_name(id), width, height);
+#endif
+    }
     
     template<class T>
     inline void move(const T id, const int width, const int height)
-    { cv::moveWindow(window_name(id), width, height); }
+    {
+#if CV_MAJOR_VERSION < 2 || ( CV_MAJOR_VERSION == 2 && CV_MINOR_VERSION < 4)
+      cvMoveWindow(window_name(id).data(), width, height);
+#else
+      cv::moveWindow(window_name(id), width, height);
+#endif
+    }
     
     template<class T>
     inline void present(const T id) const
-    { cv::updateWindow(window_name(id)); }
+    {
+#if CV_MAJOR_VERSION < 2 || ( CV_MAJOR_VERSION == 2 && CV_MINOR_VERSION < 4)
+      cvUpdateWindow(window_name(id).data());
+#else
+      cv::updateWindow(window_name(id));
+#endif
+    }
     
     inline void present() const
     {
       for(const auto& window: windows)
+#if CV_MAJOR_VERSION < 2 || ( CV_MAJOR_VERSION == 2 && CV_MINOR_VERSION < 4)
+        cvUpdateWindow(window.second.name.data());
+#else
         cv::updateWindow(window.second.name);
+#endif
     }
     
     inline void new_windows() { }
