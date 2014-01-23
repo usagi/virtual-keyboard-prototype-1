@@ -20,20 +20,6 @@ namespace arisin
       DLOG(INFO) << "video-file-front: " << video_file_front_;
       
       if(conf.video_file_top.empty())
-      {
-        captures[top].set(CV_CAP_PROP_FRAME_HEIGHT, height_);
-        captures[top].set(CV_CAP_PROP_FRAME_WIDTH , width_);
-        DLOG(INFO) << "top-cam set height and width";
-      }
-      
-      if(conf.video_file_front.empty())
-      {
-        captures[front].set(CV_CAP_PROP_FRAME_HEIGHT, height_);
-        captures[front].set(CV_CAP_PROP_FRAME_WIDTH , width_);
-        DLOG(INFO) << "front-cam set height and width";
-      }
-      
-      if(conf.video_file_top.empty())
         captures[top].open(top_camera_id_);
       else
         captures[top].open(conf.video_file_top);
@@ -50,6 +36,20 @@ namespace arisin
       if(!captures[front].isOpened())
         LOG(FATAL) << "front-cam can not opened";
       DLOG(INFO) << "front-cam opened";
+      
+      if(conf.video_file_top.empty())
+      {
+        captures[top].set(CV_CAP_PROP_FRAME_HEIGHT, height_);
+        captures[top].set(CV_CAP_PROP_FRAME_WIDTH , width_);
+        DLOG(INFO) << "top-cam set height and width";
+      }
+      
+      if(conf.video_file_front.empty())
+      {
+        captures[front].set(CV_CAP_PROP_FRAME_HEIGHT, height_);
+        captures[front].set(CV_CAP_PROP_FRAME_WIDTH , width_);
+        DLOG(INFO) << "front-cam set height and width";
+      }
     }
     
     camera_capture_t::captured_frames_t camera_capture_t::operator()()
