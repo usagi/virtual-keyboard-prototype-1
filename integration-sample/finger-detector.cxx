@@ -151,7 +151,10 @@ namespace arisin
     void finger_detector_t::set_nail_median_blur(int ksize)
     {
       if(ksize % 2 == 0)
+      {
+        LOG(WARNING) << "ksize(" << ksize << ") is not even number, fix to " << ksize + 1;
         ++ksize;
+      }
       
       nail_median_blur_ksize_ = ksize;
       DLOG(INFO) << "set_nail_median_blur ksize: " << ksize;
@@ -159,6 +162,18 @@ namespace arisin
     
     void finger_detector_t::set_circles(double dp, double min_dist, double param_1, double param_2, int min_radius, int max_radius)
     {
+      if(dp < 1)
+      {
+        LOG(WARNING) << "dp(" << dp << ") cannot set less than 1, fix to 1";
+        dp = 1;
+      }
+      
+      if(min_dist < 1)
+      {
+        LOG(WARNING) << "min_dist(" << min_dist << ") cannot set less than 1, fix to 1";
+        min_dist = 1;
+      }
+      
       circles_dp_ = dp;
       circles_min_dist_ = min_dist;
       circles_param_1_ = param_1;
