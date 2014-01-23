@@ -19,6 +19,21 @@ namespace arisin
       DLOG(INFO) << "video-file-top: "   << video_file_top_;
       DLOG(INFO) << "video-file-front: " << video_file_front_;
       
+      // 先に設定可能な場合は設定してからopen（動作が軽くなる可能性がある）
+      if(conf.video_file_top.empty())
+      {
+        captures[top].set(CV_CAP_PROP_FRAME_HEIGHT, height_);
+        captures[top].set(CV_CAP_PROP_FRAME_WIDTH , width_);
+        DLOG(INFO) << "top-cam set height and width";
+      }
+      
+      if(conf.video_file_front.empty())
+      {
+        captures[front].set(CV_CAP_PROP_FRAME_HEIGHT, height_);
+        captures[front].set(CV_CAP_PROP_FRAME_WIDTH , width_);
+        DLOG(INFO) << "front-cam set height and width";
+      }
+      
       if(conf.video_file_top.empty())
         captures[top].open(top_camera_id_);
       else
@@ -37,6 +52,7 @@ namespace arisin
         LOG(FATAL) << "front-cam can not opened";
       DLOG(INFO) << "front-cam opened";
       
+      // open後にしか設定できない環境があるのでopen後にも設定
       if(conf.video_file_top.empty())
       {
         captures[top].set(CV_CAP_PROP_FRAME_HEIGHT, height_);
