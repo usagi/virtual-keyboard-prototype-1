@@ -13,8 +13,7 @@ namespace
   template<class T_a_pixel, class T_b_pixel>
   cv::Mat cv_mat_cross_with_unorm(const cv::Mat& a, const cv::Mat& b)
   {
-    if(a.total() != b.total())
-      throw std::logic_error("a.total() != b.total()");
+    //assert(a.total() == b.total())
     
     cv::Mat r(a.rows, a.cols, a.type());
     
