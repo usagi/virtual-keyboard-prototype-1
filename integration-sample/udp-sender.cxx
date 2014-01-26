@@ -5,15 +5,28 @@ namespace arisin
   namespace etupirka
   {
     udp_sender_t::udp_sender_t(const configuration_t& conf)
-      : resolver(io_service)
-      , query(boost::asio::ip::udp::v4(), conf.udp_sender.address, std::to_string(conf.udp_sender.port).data())
-      , endpoint(*resolver.resolve(query))
-      , socket(io_service)
-      , address_(conf.udp_sender.address)
+      : address_(conf.udp_sender.address)
       , port_(conf.udp_sender.port)
+      , socket(io_service)
     {
-      DLOG(INFO) << "resolver, query, endpoint, socket are initialized";
-      DLOG(INFO) << "address(" << address_ << ") port(" << port_ << ")" ;
+      DLOG(INFO) << "address(" << address_ << ") port(" << port_ << "), socket initialized" ;
+      
+      // try without resolver
+      try
+      {
+        DLOG(INFO) << "try generate endpoint without resolver";
+        endpoint = boost::asio::ip::udp::endpoint(boost::asio::ip::address_v4::from_string(address_), port_);
+      }
+      // with resolver
+      catch(const std::exception& e)
+      {
+        DLOG(INFO) << "generate endpoint with resolver";
+        boost::asio::ip::udp::resolver        resolver(io_service);
+        boost::asio::ip::udp::resolver::query query(boost::asio::ip::udp::v4(), address_, std::to_string(port_).data());
+        endpoint = boost::asio::ip::udp::endpoint(*resolver.resolve(query));
+      }
+      DLOG(INFO) << "endpoint generated";
+      
       socket.open(boost::asio::ip::udp::v4());
       DLOG(INFO) << "socket opened";
     }

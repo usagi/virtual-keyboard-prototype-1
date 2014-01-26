@@ -519,7 +519,7 @@ namespace arisin
           , "test"
           }
         
-        , { "localhost"
+        , { "127.0.0.1"
           , 30000
           }
         

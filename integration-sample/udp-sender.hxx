@@ -18,13 +18,11 @@ namespace arisin
       
       boost::asio::io_service io_service;
       
-      boost::asio::ip::udp::resolver        resolver;
-      boost::asio::ip::udp::resolver::query query;
-      boost::asio::ip::udp::endpoint        endpoint;
-      boost::asio::ip::udp::socket          socket;
-      
       std::string address_;
       int port_;
+      
+      boost::asio::ip::udp::endpoint        endpoint;
+      boost::asio::ip::udp::socket          socket;
       
     public:
       udp_sender_t(const configuration_t& conf);
