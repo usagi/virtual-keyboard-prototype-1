@@ -16,8 +16,9 @@ endif()
 set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
 set(CMAKE_CXX_FLAGS "-Wall -pedantic-errors ${CMAKE_CXX_FLAGS}")
 
-set(CMAKE_CXX_FLAGS_RELEASE "-O3 -march=native -DNDEBUG")
-set(CMAKE_CXX_FLAGS_DEBUG   "-O0 -g")
+set(CMAKE_CXX_FLAGS_RELEASE        "-O3 -march=native -DNDEBUG")
+set(CMAKE_CXX_FLAGS_DEBUG          "-O0 -march=native -g -pg")
+set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O3 -march=native -DNDEBUG -g -pg")
 
 add_executable(etupirka
   main.cxx
