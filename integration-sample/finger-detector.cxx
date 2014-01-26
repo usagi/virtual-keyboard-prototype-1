@@ -41,7 +41,8 @@ namespace
           &&  p.y >= s_min && p.y <= s_max
           &&  p.z >= v_min && p.z <= v_max
         )
-          ? result_element_t(float(isrc->z) * 0.298912f + float(isrc->y) * 0.586611 + float(isrc->x) * 0.114478)
+          ? result_element_t((uint(isrc->z) + uint(isrc->y) * 4 + uint(isrc->x) * 2) / 7)
+          //? result_element_t(float(isrc->z) * 0.298912f + float(isrc->y) * 0.586611 + float(isrc->x) * 0.114478)
           : 0
           ;
       
