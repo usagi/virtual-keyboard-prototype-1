@@ -48,9 +48,9 @@ namespace
     using result_element_t = uint8_t;
     using pixel_t = cv::Point3f;
     
-    const auto isrc = src.begin<pixel_t>();
-    const auto esrc = src.end  <pixel_t>();
-    auto       idst = dst.begin<result_element_t>();
+          auto isrc = reinterpret_cast<pixel_t*>(src.data);
+    const auto esrc = isrc + src.total();
+          auto idst = reinterpret_cast<result_element_t*>(dst.data);
     
     std::transform(isrc, esrc, idst, [&](const pixel_t& p)
     {
