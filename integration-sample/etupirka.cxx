@@ -11,11 +11,11 @@ namespace
     f();
     
     const auto time_delta = std::chrono::duration_cast<std::chrono::nanoseconds>( std::chrono::high_resolution_clock::now() - time_start );
-    DLOG(INFO) << "time_delta [ns]" << time_delta.count();
+    DLOG(INFO) << "time_delta [ms]" << float(time_delta.count()) / 1000000;
     const auto time_wait = target_wait - time_delta;
     if(time_wait.count() > 0)
     {
-      DLOG(INFO) << "time_wait [ns]" << time_wait.count();
+      DLOG(INFO) << "time_wait [ms]" << float(time_wait.count()) / 1000000;
 #if !defined(__clang__) && __GNUC__ == 4 &&  __GNUC_MINOR__ < 8
       const auto& time_wait_boost = *reinterpret_cast<const boost::chrono::nanoseconds*>(&time_wait);
   #if BOOST_VERSION >= 105000
