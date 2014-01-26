@@ -5,6 +5,7 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
   if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "4.7")
     message(FATAL_ERROR "Insufficient g++ version; require g++-4.7")
   endif()
+  set(CMAKE_CXX_FLAGS "-fopenmp ${CMAKE_CXX_FLAGS}")
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
   if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "3.3")
     message(FATAL_ERROR "Insufficient clang++ version; require clang++-3.3")
@@ -18,7 +19,7 @@ set(CMAKE_CXX_FLAGS "-Wall -pedantic-errors ${CMAKE_CXX_FLAGS}")
 
 set(CMAKE_CXX_FLAGS_RELEASE        "-O3 -march=native -DNDEBUG")
 set(CMAKE_CXX_FLAGS_DEBUG          "-O0 -march=native -g -pg")
-set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O3 -march=native -DNDEBUG -g -pg")
+set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O3 -march=native -g -pg")
 
 add_executable(etupirka
   main.cxx
