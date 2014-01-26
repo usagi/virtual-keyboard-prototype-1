@@ -19,21 +19,18 @@ namespace
     cv::Mat r(a.rows, a.cols, a.type());
     
     //assert(a.isContinuous() && b.isContinuous() && r.isContinuous());
-    const auto ia = reinterpret_cast<T_a_pixel*>(a.data);
-    const auto ea = ia + size_t(a.cols) * size_t(a.rows);
-    const auto ib = reinterpret_cast<T_b_pixel*>(b.data);
-    const auto ir = reinterpret_cast<T_a_pixel*>(r.data);
+          auto ia = reinterpret_cast<typename T_a_pixel::value_type*>(a.data);
+    const auto ea = ia + a.total() * a.elemSize();
+          auto ib = reinterpret_cast<T_b_pixel*>(b.data);
+          auto ir = reinterpret_cast<typename T_a_pixel::value_type*>(r.data);
     
-    auto op = [&](T_a_pixel ap, const T_b_pixel bp)
+    while(ia < ea)
     {
-      auto p = &ap.x;
-      const auto e = p + (sizeof(T_a_pixel) / sizeof(typename T_a_pixel::value_type));
-      while(p < e)
-        *p++ *= bp;
-      return ap;
-    };
-    
-    std::transform(ia, ea, ib, ir, op);
+      const auto ea2 = ia + sizeof(T_a_pixel) / sizeof(typename T_a_pixel::value_type);
+      while(ia < ea2)
+        *ir++ = *ia++ * *ib;
+      ib++;
+    }
     
     return r;
   }
