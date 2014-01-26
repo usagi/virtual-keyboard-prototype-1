@@ -7,70 +7,9 @@
 
 namespace
 {
-  // in[0]: source
-  // in[1]: unorm_map
-  // out  : cross-ed result
-  template<class T_a_pixel, class T_b_pixel>
-  cv::Mat cv_mat_cross_with_unorm(const cv::Mat& a, const cv::Mat& b)
-  {
-    //assert(a.total() == b.total())
-    
-    cv::Mat r(a.rows, a.cols, a.type());
-    
-    //assert(a.isContinuous() && b.isContinuous() && r.isContinuous());
-          auto ia = reinterpret_cast<typename T_a_pixel::value_type*>(a.data);
-    const auto ea = ia + a.total() * a.elemSize();
-          auto ib = reinterpret_cast<T_b_pixel*>(b.data);
-          auto ir = reinterpret_cast<typename T_a_pixel::value_type*>(r.data);
-    
-    while(ia < ea)
-    {
-      const auto ea2 = ia + sizeof(T_a_pixel) / sizeof(typename T_a_pixel::value_type);
-      while(ia < ea2)
-        *ir++ = *ia++ * *ib;
-      ib++;
-    }
-    
-    return r;
-  }
-  
-  // in : cv::Mat<CV_32FC3(HSV96)>
-  // out: cv::Mat<CV_8UC1(B1)>
-  cv::Mat filter_hsv_from_HSV96
-  ( const cv::Mat& src
-  , const float h_min, const float h_max
-  , const float s_min, const float s_max
-  , const float v_min, const float v_max
-  )
-  {
-    cv::Mat dst(src.rows, src.cols, CV_8UC1);
-    
-    using result_element_t = uint8_t;
-    using pixel_t = cv::Point3f;
-    
-          auto isrc = reinterpret_cast<pixel_t*>(src.data);
-    const auto esrc = isrc + src.total();
-          auto idst = reinterpret_cast<result_element_t*>(dst.data);
-    
-    std::transform(isrc, esrc, idst, [&](const pixel_t& p)
-    {
-      return
-      (
-        ( ( p.x >= h_min && p.x <= h_max ) || ( h_max > 360.f &&  ( p.x >= h_min || p.x <= h_max - 360.f ) ) )
-        &&  p.y >= s_min && p.y <= s_max
-        &&  p.z >= v_min && p.z <= v_max
-      )
-        ? 1 // std::numeric_limits<result_element_t>::max
-        : 0 // std::numeric_limits<result_element_t>::min
-        ;
-    });
-    
-    return std::move(dst);
-  }
-  
   // in : cv::Mat<CV_8UC3(BGR24)>
   // out: cv::Mat<CV_8UC1(B1)>
-  cv::Mat filter_hsv_from_BGR24
+  cv::Mat filter_hsv_from_BGR24_to_single_channel
   ( const cv::Mat& src
   , const float h_min, const float h_max
   , const float s_min, const float s_max
@@ -80,7 +19,36 @@ namespace
     cv::Mat hsv;
     src.convertTo(hsv, CV_32F);
     cv::cvtColor(hsv, hsv, CV_BGR2HSV);
-    return filter_hsv_from_HSV96(hsv, h_min, h_max, s_min, s_max, v_min, v_max);
+    
+    cv::Mat dst(src.rows, src.cols, CV_8UC1);
+    
+    using result_element_t = uint8_t;
+    using hsv_pixel_t = cv::Point3f;
+    using src_pixel_t = cv::Point3_<uint8_t>;
+    
+          auto ihsv = reinterpret_cast<hsv_pixel_t*>(hsv.data);
+    const auto ehsv = ihsv + hsv.total();
+          auto idst = reinterpret_cast<result_element_t*>(dst.data);
+          auto isrc = reinterpret_cast<src_pixel_t*>(src.data);
+    
+    while(ihsv < ehsv)
+    {
+      const auto& p = *ihsv++;
+      
+      *idst++ = 
+        (
+          ( ( p.x >= h_min && p.x <= h_max ) || ( h_max > 360.f &&  ( p.x >= h_min || p.x <= h_max - 360.f ) ) )
+          &&  p.y >= s_min && p.y <= s_max
+          &&  p.z >= v_min && p.z <= v_max
+        )
+          ? result_element_t(float(isrc->z) * 0.298912f + float(isrc->y) * 0.586611 + float(isrc->x) * 0.114478)
+          : 0
+          ;
+      
+      ++isrc;
+    }
+    
+    return dst;
   }
 }
 
@@ -191,36 +159,19 @@ namespace arisin
       cv::Mat morphology_frame;
       cv::morphologyEx(frame, morphology_frame, cv::MORPH_OPEN, cv::Mat(), cv::Point(-1, -1), pre_morphology_n_);
       
-      cv::Mat hsv_filtered_map;
-      hsv_filtered_map = filter_hsv_from_BGR24
+      const auto hsv_filtered_single_channel_frame = filter_hsv_from_BGR24_to_single_channel
       ( morphology_frame
       , hsv_h_min_, hsv_h_max_
       , hsv_s_min_, hsv_s_max_
       , hsv_v_min_, hsv_v_max_
       );
       
-      cv::Mat hsv_frame;
-      hsv_frame = cv_mat_cross_with_unorm<cv::Point3_<uint8_t>, uint8_t>(morphology_frame, hsv_filtered_map);
-      
-      //cv::Mat pre_nail_frame;
-      {
-        // hsv split and get h-channel frame
-        cv::Mat h_channel_frame;
-        {
-          std::vector<cv::Mat> hsv_split_frame;
-          cv::split(hsv_frame, hsv_split_frame);
-          h_channel_frame = hsv_split_frame[0];
-        }
-        // normalize
-        //cv::?
+      // morphology: h-channel
+      cv::Mat single_channel_morphology_frame;
+      cv::morphologyEx(hsv_filtered_single_channel_frame, single_channel_morphology_frame, cv::MORPH_OPEN, cv::Mat(), cv::Point(-1, -1), nail_morphology_n_);
         
-        // morphology: h-channel
-        cv::Mat h_channel_morphology_frame;
-        cv::morphologyEx(h_channel_frame, h_channel_morphology_frame, cv::MORPH_OPEN, cv::Mat(), cv::Point(-1, -1), nail_morphology_n_);
-        
-        // median-blur: h-channel
-        cv::medianBlur(h_channel_morphology_frame, pre_nail_frame, nail_median_blur_ksize_);
-      }
+      // median-blur: h-channel
+      cv::medianBlur(single_channel_morphology_frame, pre_nail_frame, nail_median_blur_ksize_);
       
       circles_t circles;
       {
