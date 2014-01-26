@@ -139,6 +139,9 @@ namespace arisin
               { return d(ct[0], cf1[0]) < d(ct[0], cf2[0]); }
             );
             
+            if(x_distance_min_element == std::end(circles_front))
+              continue;
+            
             // 一番近い子をとりあえずcfとして迎え入れる。
             const auto& cf = *x_distance_min_element;
             DLOG(INFO) << "x-distance(ct, cf): " << d(ct[0], cf[0]);
