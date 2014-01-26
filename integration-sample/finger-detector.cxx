@@ -18,10 +18,11 @@ namespace
     
     cv::Mat r(a.rows, a.cols, a.type());
     
-    const auto ia = a.begin<T_a_pixel>();
-    const auto ea = a.end  <T_a_pixel>();
-    const auto ib = b.begin<T_b_pixel>();
-    const auto ir = r.begin<T_a_pixel>();
+    //assert(a.isContinuous() && b.isContinuous() && r.isContinuous());
+    const auto ia = reinterpret_cast<T_a_pixel*>(a.data);
+    const auto ea = ia + size_t(a.cols) * size_t(a.rows);
+    const auto ib = reinterpret_cast<T_b_pixel*>(b.data);
+    const auto ir = reinterpret_cast<T_a_pixel*>(r.data);
     
     auto op = [&](T_a_pixel ap, const T_b_pixel bp)
     {
@@ -29,12 +30,12 @@ namespace
       const auto e = p + (sizeof(T_a_pixel) / sizeof(typename T_a_pixel::value_type));
       while(p < e)
         *p++ *= bp;
-      return std::move(ap);
+      return ap;
     };
     
     std::transform(ia, ea, ib, ir, op);
     
-    return std::move(r);
+    return r;
   }
   
   // in : cv::Mat<CV_32FC3(HSV96)>
