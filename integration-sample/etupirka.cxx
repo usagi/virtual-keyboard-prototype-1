@@ -1,6 +1,8 @@
-#include "etupirka.hxx"
+#include <thread>
+#include <future>
 #include <boost/version.hpp>
 #include <boost/chrono.hpp>
+#include "etupirka.hxx"
 
 namespace
 {
@@ -108,12 +110,15 @@ namespace arisin
           
           DLOG(INFO) << "to finger_detector_top()";
           // topから指先群を検出する。
-          const auto circles_top   = (*finger_detector_top  )(captured_frames.top  );
-          DLOG(INFO) << "circles_top.size(): " << circles_top.size();
+          auto finger_detector_future_top = std::async([&](){ return (*finger_detector_top)(captured_frames.top); });
           
           DLOG(INFO) << "to finger_detector_front()";
           // frontから指先群を検出する。
-          const auto circles_front = (*finger_detector_front)(captured_frames.front);
+          auto finger_detector_future_front = std::async([&](){ return (*finger_detector_front)(captured_frames.front); });
+          
+          const auto circles_top   = finger_detector_future_top.get();
+          const auto circles_front = finger_detector_future_front.get();
+          DLOG(INFO) << "circles_top.size(): "   << circles_top.size();
           DLOG(INFO) << "circles_front.size(): " << circles_front.size();
           
           DLOG(INFO) << "to virtual_keyboard->reset()";
