@@ -108,6 +108,18 @@ namespace arisin
           // topとfrontのカメラキャプチャー像を手に入れる。
           const auto captured_frames = (*camera_capture)();
           
+          if(captured_frames.top.rows != conf_.camera_capture.height || captured_frames.top.cols != conf_.camera_capture.width)
+          {
+            LOG(WARNING) << "top-cam captured frame is invalid data; skip the frame and continue";
+            return;
+          }
+          
+          if(captured_frames.front.rows != conf_.camera_capture.height || captured_frames.front.cols != conf_.camera_capture.width)
+          {
+            LOG(WARNING) << "front-cam captured frame is invalid data; skip the frame and continue";
+            return;
+          }
+          
           DLOG(INFO) << "to finger_detector_top()";
           // topから指先群を検出する。
           auto finger_detector_future_top = std::async([&](){ return (*finger_detector_top)(captured_frames.top); });
