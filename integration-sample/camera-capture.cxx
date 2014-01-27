@@ -66,6 +66,31 @@ namespace arisin
         captures[front].set(CV_CAP_PROP_FRAME_WIDTH , width_);
         DLOG(INFO) << "front-cam set height and width";
       }
+      
+      if(conf.video_file_top.empty())
+      {
+        DLOG(INFO) << "begin test top-cam capture 3 frames (drop 2 frames and test 1 frame)";
+        cv::Mat m;
+        captures[top] >> m;
+        captures[top] >> m;
+        captures[top] >> m;
+        if(m.rows != height_ || m.cols != width_)
+          LOG(FATAL) << "top-cam capture test is failed; please check the USB device connection route on detail USB controller chip and hardware bandwidth.";
+        DLOG(INFO) << "test top-cam succeeded";
+      }
+      
+      if(conf.video_file_front.empty())
+      {
+        DLOG(INFO) << "begin test front-cam capture 3 frames (drop 2 frames and test 1 frame)";
+        cv::Mat m;
+        captures[front] >> m;
+        captures[front] >> m;
+        captures[front] >> m;
+        if(m.rows != height_ || m.cols != width_)
+          LOG(FATAL) << "front-cam capture test is failed; please check the USB device connection route on detail USB controller chip and hardware bandwidth.";
+        DLOG(INFO) << "test front-cam succeeded";
+      }
+      
     }
     
     camera_capture_t::captured_frames_t camera_capture_t::operator()()
