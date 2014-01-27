@@ -5,53 +5,7 @@
 #include <limits>
 #include <cassert>
 
-namespace
-{
-  // in : cv::Mat<CV_8UC3(BGR24)>
-  // out: cv::Mat<CV_8UC1(B1)>
-  cv::Mat filter_hsv_from_BGR24_to_single_channel
-  ( const cv::Mat& src
-  , const float h_min, const float h_max
-  , const float s_min, const float s_max
-  , const float v_min, const float v_max
-  )
-  {
-    cv::Mat hsv;
-    src.convertTo(hsv, CV_32F);
-    cv::cvtColor(hsv, hsv, CV_BGR2HSV);
-    
-    cv::Mat dst(src.rows, src.cols, CV_8UC1);
-    
-    using result_element_t = uint8_t;
-    using hsv_pixel_t = cv::Point3f;
-    using src_pixel_t = cv::Point3_<uint8_t>;
-    
-          auto ihsv = reinterpret_cast<hsv_pixel_t*>(hsv.data);
-    const auto ehsv = ihsv + hsv.total();
-          auto idst = reinterpret_cast<result_element_t*>(dst.data);
-          auto isrc = reinterpret_cast<src_pixel_t*>(src.data);
-    
-    while(ihsv < ehsv)
-    {
-      const auto& p = *ihsv++;
-      
-      *idst++ = 
-        (
-          ( ( p.x >= h_min && p.x <= h_max ) || ( h_max > 360.f &&  ( p.x >= h_min || p.x <= h_max - 360.f ) ) )
-          &&  p.y >= s_min && p.y <= s_max
-          &&  p.z >= v_min && p.z <= v_max
-        )
-          ? result_element_t((uint(isrc->z) + uint(isrc->y) * 4 + uint(isrc->x) * 2) / 7)
-          //? result_element_t(float(isrc->z) * 0.298912f + float(isrc->y) * 0.586611 + float(isrc->x) * 0.114478)
-          : 0
-          ;
-      
-      ++isrc;
-    }
-    
-    return dst;
-  }
-}
+#include "image_processor.hxx"
 
 namespace arisin
 {
@@ -155,26 +109,34 @@ namespace arisin
     finger_detector_t::circles_t finger_detector_t::operator()(const cv::Mat& frame)
     {
       cv::Mat bilateral_frame;
-      bilateralFilter(frame, bilateral_frame, pre_bilateral_d_, pre_bilateral_sc_, pre_bilateral_ss_);
+      //bilateral_frame = frame;
+      cv::bilateralFilter(frame, bilateral_frame, pre_bilateral_d_, pre_bilateral_sc_, pre_bilateral_ss_);
       
       cv::Mat morphology_frame;
+      //morphology_frame = bilateral_frame;
       cv::morphologyEx(frame, morphology_frame, cv::MORPH_OPEN, cv::Mat(), cv::Point(-1, -1), pre_morphology_n_);
       
+      //cv::Mat hsv_filtered_single_channel_frame(frame.rows, frame.cols, CV_8UC1);
+      //*
       const auto hsv_filtered_single_channel_frame = filter_hsv_from_BGR24_to_single_channel
       ( morphology_frame
       , hsv_h_min_, hsv_h_max_
       , hsv_s_min_, hsv_s_max_
       , hsv_v_min_, hsv_v_max_
       );
+      //*/
       
       // morphology: h-channel
       cv::Mat single_channel_morphology_frame;
+      //single_channel_morphology_frame = hsv_filtered_single_channel_frame;
       cv::morphologyEx(hsv_filtered_single_channel_frame, single_channel_morphology_frame, cv::MORPH_OPEN, cv::Mat(), cv::Point(-1, -1), nail_morphology_n_);
         
       // median-blur: h-channel
+      //pre_nail_frame = single_channel_morphology_frame;
       cv::medianBlur(single_channel_morphology_frame, pre_nail_frame, nail_median_blur_ksize_);
       
       circles_t circles;
+      //*
       {
         // circles detector
         cv::HoughCircles
@@ -205,6 +167,7 @@ namespace arisin
         }
         circles.resize(std::distance(std::begin(circles), t + 1));
       }
+      //*/
 #ifndef NDEBUG
       for(const auto& circle: circles)
         DLOG(INFO) << "circle x, y, r: " << circle[0] << ", " << circle[1] << ", " << circle[2];
