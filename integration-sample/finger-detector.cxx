@@ -110,7 +110,8 @@ namespace arisin
     {
       cv::Mat bilateral_frame;
       //bilateral_frame = frame;
-      cv::bilateralFilter(frame, bilateral_frame, pre_bilateral_d_, pre_bilateral_sc_, pre_bilateral_ss_);
+      //cv::bilateralFilter(frame, bilateral_frame, pre_bilateral_d_, pre_bilateral_sc_, pre_bilateral_ss_);
+      ::bilateralFilter_8u(frame, bilateral_frame, pre_bilateral_d_, pre_bilateral_sc_, pre_bilateral_ss_);
       
       cv::Mat morphology_frame;
       //morphology_frame = bilateral_frame;
