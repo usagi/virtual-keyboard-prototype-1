@@ -307,15 +307,15 @@ namespace arisin
 
       DLOG(INFO) << "done initialize all submodules";
       
-      DLOG(INFO) << camera_capture.get();
-      DLOG(INFO) << finger_detector_top.get();
-      DLOG(INFO) << finger_detector_front.get();
-      DLOG(INFO) << space_converter.get();
-      DLOG(INFO) << virtual_keyboard.get();
-      DLOG(INFO) << udp_sender.get();
-      DLOG(INFO) << udp_reciever.get();
-      DLOG(INFO) << key_invoker.get();
-      
+      DLOG(INFO) << "camera-capture address       : " << camera_capture.get();
+      DLOG(INFO) << "finger-detector-top address  : " << finger_detector_top.get();
+      DLOG(INFO) << "finger-detector-front address: " << finger_detector_front.get();
+      DLOG(INFO) << "space-converter address      : " << space_converter.get();
+      DLOG(INFO) << "virtual-keyboard address     : " << virtual_keyboard.get();
+      DLOG(INFO) << "udp-sender address           : " << udp_sender.get();
+      DLOG(INFO) << "udp-reciever address         : " << udp_reciever.get();
+      DLOG(INFO) << "key-invoker address          : " << key_invoker.get();
+      DLOG(INFO) << "gui address                  : " << gui.get();
     }
     
     bool etupirka_t::is_running() const
