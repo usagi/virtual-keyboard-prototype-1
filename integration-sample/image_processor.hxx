@@ -6,8 +6,29 @@
 
 namespace
 {
-  class BilateralFilter_8u_Invoker :
-    public cv::ParallelLoopBody
+
+#if CV_MAJOR_VERSION < 2 || ( CV_MAJOR_VERSION == 2 && CV_MINOR_VERSION < 4)
+  
+  class parallel_loop_body
+  {
+  public:
+    virtual ~parallel_loop_body(){}
+    virtual void operator() (const cv::Range& range) const = 0;
+  };
+  
+  inline void parallel_for(const cv::Range& range, const parallel_loop_body& body, double nstripes)
+  { body(range); }
+  
+#else
+  
+  using parallel_loop_body = cv::ParallelLoopBody;
+  inline void parallel_for(const cv::Range& range, const parallel_loop_body& body, double nstripes)
+  { cv::parallel_for_(range, body, nstripes); }
+  
+#endif
+
+  class BilateralFilter_8u_Invoker
+    : public ::parallel_loop_body
   {
   public:
     BilateralFilter_8u_Invoker
@@ -205,7 +226,7 @@ namespace
     {
       bool ok;
       IPPBilateralFilter_8u_Invoker body(temp, dst, sigma_color * sigma_color, sigma_space * sigma_space, radius, &ok );
-      parallel_for_(Range(0, dst.rows), body, dst.total()/(double)(1<<16));
+      parallel_for(Range(0, dst.rows), body, dst.total()/(double)(1<<16));
       if( ok ) return;
     }
   #endif
@@ -238,8 +259,9 @@ namespace
     }
 
     BilateralFilter_8u_Invoker body(dst, temp, radius, maxk, space_ofs, space_weight, color_weight);
-    parallel_for_(cv::Range(0, size.height), body, dst.total()/(double)(1<<16));
+    parallel_for(cv::Range(0, size.height), body, dst.total()/(double)(1<<16));
   }
+  
   
   
   // in : cv::Mat<CV_8UC3(BGR24)>
