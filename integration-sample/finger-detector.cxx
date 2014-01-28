@@ -127,15 +127,16 @@ namespace arisin
       );
       //*/
       
-      // morphology: h-channel
+      // morphology: single-channel
       cv::Mat single_channel_morphology_frame;
       //single_channel_morphology_frame = hsv_filtered_single_channel_frame;
       cv::morphologyEx(hsv_filtered_single_channel_frame, single_channel_morphology_frame, cv::MORPH_OPEN, cv::Mat(), cv::Point(-1, -1), nail_morphology_n_);
         
-      // median-blur: h-channel
+      // median-blur: single-channel
       //pre_nail_frame = single_channel_morphology_frame;
-      cv::medianBlur(single_channel_morphology_frame, pre_nail_frame, nail_median_blur_ksize_);
-      
+      //cv::medianBlur(single_channel_morphology_frame, pre_nail_frame, nail_median_blur_ksize_);
+      ::medianBlur(single_channel_morphology_frame, pre_nail_frame, nail_median_blur_ksize_);
+
       circles_t circles;
       //*
       {
