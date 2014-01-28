@@ -169,36 +169,36 @@ namespace
     template<class T_head, class... T_tails>
     inline void new_trackbars(const T_head& head, T_tails... tails)
     {
-      DLOG(INFO) << "new_trackbars start";
-      DLOG(INFO) << "call new_trackbar(head)";
+      //DLOG(INFO) << "new_trackbars start";
+      //DLOG(INFO) << "call new_trackbar(head)";
       new_trackbar(head);
-      DLOG(INFO) << "call new_trackbars(tails...)";
+      //DLOG(INFO) << "call new_trackbars(tails...)";
       new_trackbars(tails...);
-      DLOG(INFO) << "new_trackbars end";
+      //DLOG(INFO) << "new_trackbars end";
     }
     
     template<class T_trackbar_id, class T_window_id>
     inline void new_trackbar(const new_trackbar_params_t<T_trackbar_id, T_window_id>& new_trackbar_params)
     {
-      DLOG(INFO) << "new_trackbar";
+      //DLOG(INFO) << "new_trackbar";
       
       auto& target_window = windows.at(int(new_trackbar_params.window_id));
-      DLOG(INFO) << "target_window address: " << &target_window;
-      DLOG(INFO) << "target_window name: " << target_window.name;
+      //DLOG(INFO) << "target_window address: " << &target_window;
+      //DLOG(INFO) << "target_window name: " << target_window.name;
       
       auto& target_trackbars = target_window.trackbars;
-      DLOG(INFO) << "target_trackbars size: " << target_trackbars.size();
+      //DLOG(INFO) << "target_trackbars size: " << target_trackbars.size();
       
       if(boost::find_if(target_trackbars, [&](const trackbars_t::value_type& v){ return v.second.name == new_trackbar_params.trackbar_name; }) != std::end(target_trackbars))
         throw std::logic_error(std::string("trackbar name is already used: ") + new_trackbar_params.trackbar_name);
-      DLOG(INFO) << "can use the trackbar name";
+      //DLOG(INFO) << "can use the trackbar name";
       
       std::unique_ptr<int> pv(new int(new_trackbar_params.initial_value * new_trackbar_params.visual_ratio));
-      DLOG(INFO) << "generate pv: " << *pv;
+      //DLOG(INFO) << "generate pv: " << *pv;
       cv::createTrackbar(new_trackbar_params.trackbar_name, window_name(new_trackbar_params.window_id), pv.get(), new_trackbar_params.max_value * new_trackbar_params.visual_ratio, nullptr, nullptr);
-      DLOG(INFO) << "trackbar created";
+      //DLOG(INFO) << "trackbar created";
       target_trackbars.emplace(int(new_trackbar_params.trackbar_id), trackbar_data_t(new_trackbar_params.trackbar_name, std::move(pv), new_trackbar_params.visual_ratio, new_trackbar_params.real_ratio));
-      DLOG(INFO) << "emplaced";
+      //DLOG(INFO) << "emplaced";
     }
     
     template<class T_trackbar_id, class T_window_id>
