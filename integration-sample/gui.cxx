@@ -11,7 +11,13 @@ namespace arisin
       , current_finger_detector_conf_(conf.finger_detector_top)
       , prev_top_front_switch(0)
     {
+      DLOG(INFO) << "ctor start";
+      
       auto& cv_gui_helper = cv_gui_helper_t::instance();
+      
+      DLOG(INFO) << "cv_gui_helper address: " << &cv_gui_helper;
+      
+      DLOG(INFO) << "new_windows";
       
       cv_gui_helper.new_windows
       ( cv_gui_helper.make_new_window_params( window::in_top      , "top-cam(input)"   , CV_WINDOW_NORMAL | CV_WINDOW_KEEPRATIO | CV_GUI_EXPANDED)
@@ -22,18 +28,29 @@ namespace arisin
       , cv_gui_helper.make_new_window_params( window::controller_2, "controller 2"     , CV_WINDOW_NORMAL | CV_WINDOW_FREERATIO | CV_GUI_EXPANDED)
       );
       
+      DLOG(INFO) << "resize in_top";
       cv_gui_helper.resize(window::in_top   , conf.camera_capture.width, conf.camera_capture.height);
+      DLOG(INFO) << "resize in_front";
       cv_gui_helper.resize(window::in_front , conf.camera_capture.width, conf.camera_capture.height);
+      DLOG(INFO) << "resize out_top";
       cv_gui_helper.resize(window::out_top  , conf.camera_capture.width, conf.camera_capture.height);
+      DLOG(INFO) << "resize out_front";
       cv_gui_helper.resize(window::out_front, conf.camera_capture.width, conf.camera_capture.height);
       
+      DLOG(INFO) << "move in_top";
       cv_gui_helper.move(window::in_top      ,    0,   0);
+      DLOG(INFO) << "move in_front";
       cv_gui_helper.move(window::in_front    ,    0, 480);
+      DLOG(INFO) << "move out_top";
       cv_gui_helper.move(window::out_top     ,  640,   0);
+      DLOG(INFO) << "move out_front";
       cv_gui_helper.move(window::out_front   ,  640, 480);
+      DLOG(INFO) << "move controller_1";
       cv_gui_helper.move(window::controller_1, 1280,   0);
+      DLOG(INFO) << "move controller_2";
       cv_gui_helper.move(window::controller_2, 1600,   0);
       
+      DLOG(INFO) << "new_trackbars";
       cv_gui_helper.new_trackbars
       ( cv_gui_helper.make_new_trackbar_params( trackbar::top_front_switch      , "0:top/1:front switch"        , window::controller_1,   0,   1)
       , cv_gui_helper.make_new_trackbar_params( trackbar::save                  , "1:save"                      , window::controller_1,   0,   1)
@@ -57,6 +74,8 @@ namespace arisin
       , cv_gui_helper.make_new_trackbar_params( trackbar::nail_circles_min_radius, "hough-circle min radius"     , window::controller_2, current_finger_detector_conf_.circles_min_radius,  48)
       , cv_gui_helper.make_new_trackbar_params( trackbar::nail_circles_max_radius, "hough-circle max radius"     , window::controller_2, current_finger_detector_conf_.circles_max_radius,  48)
       );
+      
+      DLOG(INFO) << "ctor end";
     }
     
     void gui_t::operator()(const input_t& input)
