@@ -52,7 +52,14 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_L
 else()
   find_package(Boost 1.49.0 REQUIRED system)
 endif()
-find_package(OpenCV REQUIRED)
+find_package(OpenCV REQUIRED core highgui imgproc)
+
+find_library(LIBTBB NAMES tbb HINTS /opt/local/lib)
+if(LIBTBB STREQUAL "LIBTBB-NOTFOUND")
+  message(STATUS "TBB is not found, try no use.")
+  set(LIBTBB "")
+endif()
+message(STATUS "LIBTBB: ${LIBTBB}")
 
 find_file(LIBWRPSQLITE3 WonderRabbitProject/SQLite3.hpp
   PATHS
@@ -96,6 +103,7 @@ target_link_libraries(etupirka
   ${Boost_LIBRARIES}
   ${SQLITE3_LIB}
   ${OpenCV_LIBS}
+  ${LIBTBB}
   ${LIBSQLITE3_LIBRARIES}
 )
 
