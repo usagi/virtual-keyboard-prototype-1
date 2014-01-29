@@ -9,6 +9,7 @@
 #include "logger.hxx"
 
 #include "camera-capture.hxx"
+#include "network-common.hxx"
 
 namespace arisin
 {

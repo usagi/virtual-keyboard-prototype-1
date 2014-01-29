@@ -9,6 +9,7 @@
 #include "logger.hxx"
 
 #include "camera-capture.hxx"
+#include "network-common.hxx"
 
 namespace arisin
 {
@@ -25,6 +26,8 @@ namespace arisin
       
       boost::asio::ip::udp::endpoint        endpoint;
       boost::asio::ip::udp::socket          socket;
+
+      frame_packet_t::sequence_id_t sequence_id;
       
     public:
       udp_sender_t(const configuration_t& conf);
