@@ -8,6 +8,8 @@
 #include "configuration.hxx"
 #include "logger.hxx"
 
+#include "camera-capture.hxx"
+
 namespace arisin
 {
   namespace etupirka
@@ -20,6 +22,8 @@ namespace arisin
     public:
       udp_reciever_t(const configuration_t& conf);
       key_signal_t operator()();
+      camera_capture_t::captured_frames_t recieve_captured_frames();
+      template<class T> T recieve();
       const int port() const;
     };
   }

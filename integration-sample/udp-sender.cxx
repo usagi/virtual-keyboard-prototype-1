@@ -47,6 +47,24 @@ namespace arisin
 #endif
     }
     
+    void udp_sender_t::operator()(const camera_capture_t::captured_frames_t& captured_frames)
+    {
+      LOG(FATAL) << "NOT IMPLEMENTED";
+      
+      //DLOG(INFO) << "key_signal code, state: " << key_signal.code_state.code << "," << key_signal.code_state.state;
+      
+      //using buffer_t = boost::array<decltype(key_signal.char_array)::value_type, sizeof(key_signal.char_array) / sizeof(decltype(key_signal.char_array)::value_type)>;
+      //const buffer_t& buffer( *reinterpret_cast<const buffer_t*>( key_signal.char_array.data()) );
+      
+#ifndef NDEBUG
+      //auto n =
+#endif
+      //socket.send_to(boost::asio::buffer(buffer), endpoint);
+#ifndef NDEBUG
+      //DLOG(INFO) << "message sent [bytes]: " << n;
+#endif
+    }
+    
     const std::string& udp_sender_t::address() const
     { return address_; }
     

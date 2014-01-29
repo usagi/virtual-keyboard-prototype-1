@@ -43,6 +43,8 @@ namespace arisin
       void initialize(const mode_t);
       void run_main();
       void run_reciever();
+      void run_main_m1();
+      void run_reciever_p1();
       
       configuration_t conf_;
       bool is_running_ = false;

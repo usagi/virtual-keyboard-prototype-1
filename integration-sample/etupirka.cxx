@@ -79,6 +79,16 @@ namespace arisin
           run_reciever();
           break;
           
+        case mode_t::main_m1:
+          DLOG(INFO) << "mode is main-, to run_main";
+          run_main_m1();
+          break;
+          
+        case mode_t::reciever_p1:
+          DLOG(INFO) << "mode is reciever+, to run_reciever";
+          run_reciever_p1();
+          break;
+          
         case mode_t::none:
         default:
           DLOG(INFO) << "mode is none, return";
@@ -250,6 +260,175 @@ namespace arisin
         {
           const auto key_signal = (*udp_reciever)();
           (*key_invoker)(key_signal.code_state.code, WonderRabbitProject::key::writer_t::state_t(key_signal.code_state.state));
+        }
+        , main_loop_wait_
+        );
+      }
+    }
+    
+    void etupirka_t::run_main_m1()
+    {
+      DLOG(INFO) << "to initialize";
+      initialize();
+      
+      is_running_ = true;
+      
+      DLOG(INFO) << "run main- mode main loop";
+      
+      while(is_running_)
+      {
+        adjust_fps([&]()
+        {
+          DLOG(INFO) << "to camera_capture()";
+          // topとfrontのカメラキャプチャー像を手に入れる。
+          const auto captured_frames = (*camera_capture)();
+          
+          if(captured_frames.top.rows != conf_.camera_capture.height || captured_frames.top.cols != conf_.camera_capture.width)
+          {
+            LOG(WARNING) << "top-cam captured frame is invalid data; skip the frame and continue";
+            return;
+          }
+          
+          if(captured_frames.front.rows != conf_.camera_capture.height || captured_frames.front.cols != conf_.camera_capture.width)
+          {
+            LOG(WARNING) << "front-cam captured frame is invalid data; skip the frame and continue";
+            return;
+          }
+          
+          (*udp_sender)(captured_frames);
+        }
+        , main_loop_wait_
+        );
+      }
+    }
+    
+    void etupirka_t::run_reciever_p1()
+    {
+      initialize();
+      
+      virtual_keyboard_t::pressing_keys_t pressing_keys_before;
+      
+      is_running_ = true;
+      
+      DLOG(INFO) << "run reciever+ mode main loop";
+      
+      while(is_running_)
+      {
+        adjust_fps([&]()
+        {
+          const auto captured_frames = udp_reciever->recieve_captured_frames();
+          
+          DLOG(INFO) << "to finger_detector_top()";
+          // topから指先群を検出する。
+          auto finger_detector_future_top = std::async([&](){ return (*finger_detector_top)(captured_frames.top); });
+          
+          DLOG(INFO) << "to finger_detector_front()";
+          // frontから指先群を検出する。
+          auto finger_detector_future_front = std::async([&](){ return (*finger_detector_front)(captured_frames.front); });
+          
+          const auto circles_top   = finger_detector_future_top.get();
+          const auto circles_front = finger_detector_future_front.get();
+          DLOG(INFO) << "circles_top.size(): "   << circles_top.size();
+          DLOG(INFO) << "circles_front.size(): " << circles_front.size();
+          
+          DLOG(INFO) << "to virtual_keyboard->reset()";
+          // 仮想キーボードの状態をリセット
+          virtual_keyboard->reset();
+              
+          DLOG(INFO) << "to for(circles_top)";
+          // topの検出円群をforで回す
+          for(const auto& ct : circles_top)
+          {
+            // ここでだけ何度も使うので2実数点の距離を算出するλ式にdと名づけて定義しておく。
+            auto d = [](float a, float b){ return std::abs(a - b); };
+            
+            // 着目しているtopのある検出円のX座標に最も近いX座標のfrontの検出円を探索する。
+            auto x_distance_min_element = std::min_element
+            ( std::begin(circles_front), std::end(circles_front)
+            , [&](const finger_detector_t::circles_t::value_type& cf1, const finger_detector_t::circles_t::value_type& cf2)
+              { return d(ct[0], cf1[0]) < d(ct[0], cf2[0]); }
+            );
+            
+            if(x_distance_min_element == std::end(circles_front))
+              continue;
+            
+            // 一番近い子をとりあえずcfとして迎え入れる。
+            const auto& cf = *x_distance_min_element;
+            DLOG(INFO) << "x-distance(ct, cf): " << d(ct[0], cf[0]);
+            
+            // X座標距離に判定のしきい値を適用する
+            if(d(ct[0], cf[0]) <= conf_.circle_x_distance_threshold)
+            {
+              // 3次元空間における座標が求まる
+              const auto real_position = (*space_converter)({{ct[0], ct[1] + ct[2]}}, {{cf[0], cf[1] + cf[2]}});
+              DLOG(INFO) << "estimated real_position: (" << real_position[0] << "," << real_position[1] << "," << real_position[2] << ")";
+              DLOG(INFO) << "to virtual_keyboard->add_test()";
+              // 仮想キーボードの押下テスト＆もしかしたらシグナル追加
+              virtual_keyboard->add_test(real_position[0], real_position[1], real_position[2]);
+            }
+          }
+          
+          DLOG(INFO) << "to virtual_keyboard->pressing_keys()";
+          // 仮想キーボードの状態を取得
+          const auto pressing_keys = virtual_keyboard->pressing_keys();
+          
+          if(conf_.send_repeat_key_down_signal)
+          {
+            DLOG(INFO) << "to send key-down all";
+            // 押されているキーを全て
+            for(const auto pressing_key : pressing_keys)
+            {
+              DLOG(INFO) << "to udp_sender(); key-down signal: " << pressing_key;
+              // キーストローク送出する
+              (*key_invoker)(pressing_key, WonderRabbitProject::key::writer_t::state_t::down);
+            }
+          }
+          else
+          {
+            DLOG(INFO) << "to send key-down without before downed";
+            // 押されているキーのうち、
+            for(const auto pressing_key : pressing_keys)
+              // 前回押されていなかったキーのみ
+              if(std::find(std::begin(pressing_keys_before), std::end(pressing_keys_before), pressing_key) == std::end(pressing_keys_before))
+              {
+                DLOG(INFO) << "to udp_sender(); key-down signal: " << pressing_key;
+                // キーストローク送出する
+                (*key_invoker)(pressing_key, WonderRabbitProject::key::writer_t::state_t::down);
+              }
+          }
+          
+          DLOG(INFO) << "to send key-up";
+          // 前回のキー押下状態を全てforで回し
+          for(const auto pressing_key_before : pressing_keys_before)
+            // 離されたキーを検出して
+            if(std::find(std::begin(pressing_keys), std::end(pressing_keys), pressing_key_before) == std::end(pressing_keys))
+            {
+              DLOG(INFO) << "to udp_sender(); key-up signal: " << pressing_key_before;
+              // キーストローク送出する
+              (*key_invoker)(pressing_key_before, WonderRabbitProject::key::writer_t::state_t::up);
+            }
+          
+          // 現在押されていたキー群を次のループでの前のキー押下状態として使えるように保存
+          pressing_keys_before = pressing_keys;
+          
+          if(conf_.gui)
+          {
+            DLOG(INFO) << "gui()";
+            (*gui)({captured_frames.top, captured_frames.front, finger_detector_top->effected_frame(), finger_detector_front->effected_frame(), circles_top, circles_front});
+            
+            DLOG(INFO) << "propagate conf to finger_detector_top/front";
+            if(gui->current_is_top())
+            {
+              DLOG(INFO) << "set to top";
+              finger_detector_top->set(gui->current_finger_detector_conf());
+            }
+            else
+            {
+              DLOG(INFO) << "set to front";
+              finger_detector_front->set(gui->current_finger_detector_conf());
+            }
+          }
+          
         }
         , main_loop_wait_
         );
