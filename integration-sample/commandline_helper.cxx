@@ -12,6 +12,8 @@ namespace
       case arisin::etupirka::mode_t::none: return "none";
       case arisin::etupirka::mode_t::main: return "main";
       case arisin::etupirka::mode_t::reciever: return "reciever";
+      case arisin::etupirka::mode_t::main_m1:     return "main-";
+      case arisin::etupirka::mode_t::reciever_p1: return "reciever+";
     }
     LOG(FATAL) << "unkown mode: " << int(m);
     throw std::runtime_error(std::string("unkown mode: ") + std::to_string(int(m)));
@@ -24,6 +26,8 @@ namespace
       case h("none"): return arisin::etupirka::mode_t::none;
       case h("main"): return arisin::etupirka::mode_t::main;
       case h("reciever"): return arisin::etupirka::mode_t::reciever;
+      case h("main-"):     return arisin::etupirka::mode_t::main_m1;
+      case h("reciever+"): return arisin::etupirka::mode_t::reciever_p1;
     }
     LOG(FATAL) << "can not convert to mode_t from: " << s;
     throw std::runtime_error(std::string("can not convert to mode_t from: ") + s);

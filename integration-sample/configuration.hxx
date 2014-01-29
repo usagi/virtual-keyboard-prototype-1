@@ -13,8 +13,10 @@ namespace arisin
     // 実行モード
     enum class mode_t
     { none     // 動作しないモード
-    , main     // カメラ制御〜UDP送信モード
-    , reciever // UDP受信〜キーストローク発行モード
+    , main     // ｛カメラ制御→画像処理→キーシグナル生成→UDP送信（キーシグナル）｝モード
+    , reciever // ｛UDP受信（キーシグナル）→キーストローク発行｝モード
+    , main_m1     // ｛カメラ制御→UDP送信（画像）｝モード
+    , reciever_p1 // ｛UDP受信（画像）→画像処理→キーシグナル生成→キーストローク発行｝モード
     };
     
     struct configuration_t
