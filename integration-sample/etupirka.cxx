@@ -452,7 +452,7 @@ namespace arisin
       
       is_running_ = true;
       
-      DLOG(INFO) << "run main- mode main loop";
+      DLOG(INFO) << "run dummy-main mode main loop";
       
       std::mt19937 rng;
       std::uniform_int_distribution<uint32_t> distribution(4, 40);
