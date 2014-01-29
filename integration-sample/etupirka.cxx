@@ -303,6 +303,48 @@ namespace arisin
           gui.reset(nullptr);
           break;
           
+        case mode_t::main_m1:
+          DLOG(INFO) << "to initialize camera_capture";
+          camera_capture.reset(new camera_capture_t(conf_));
+          DLOG(INFO) << "to nullptr finger_detector_top";
+          finger_detector_top.reset(nullptr);
+          DLOG(INFO) << "to nullptr finger_detector_front";
+          finger_detector_front.reset(nullptr);
+          DLOG(INFO) << "to nullptr space_converter";
+          space_converter.reset(nullptr);
+          DLOG(INFO) << "to nullptr virtual_keyboard";
+          virtual_keyboard.reset(nullptr);
+          DLOG(INFO) << "to nullptr udp_sender";
+          udp_sender.reset(nullptr);
+          DLOG(INFO) << "to initialize udp_sender";
+          udp_sender.reset(new udp_sender_t(conf_));
+          DLOG(INFO) << "to nullptr udp_reciever";
+          udp_reciever.reset(nullptr);
+          DLOG(INFO) << "to nullptr key_invoker";
+          key_invoker.reset(nullptr);
+          DLOG(INFO) << "to nullptr gui";
+          gui.reset(nullptr);
+          break;
+          
+        case mode_t::reciever_p1:
+          DLOG(INFO) << "to nullptr camera_capture";
+          camera_capture.reset(nullptr);
+          DLOG(INFO) << "to initialize finger_detector_top";
+          finger_detector_top.reset(new finger_detector_t(conf_, true));
+          DLOG(INFO) << "to initialize finger_detector_front";
+          finger_detector_front.reset(new finger_detector_t(conf_, false));
+          DLOG(INFO) << "to initialize space_converter";
+          space_converter.reset(new space_converter_t(conf_));
+          DLOG(INFO) << "to initialize virtual_keyboard";
+          virtual_keyboard.reset(new virtual_keyboard_t(conf_));
+          DLOG(INFO) << "to initialize udp_reciever";
+          udp_reciever.reset(new udp_reciever_t(conf_));
+          DLOG(INFO) << "to initialize key_invoker";
+          key_invoker.reset(new key_invoker_t(conf_));
+          DLOG(INFO) << "to " << ( conf_.gui ? "initialize" : "nullptr" ) << " gui";
+          gui.reset( conf_.gui ? new gui_t(conf_) : nullptr);
+          break;
+          
         default:
           DLOG(INFO) << "to nullptr camera_capture";
           camera_capture.reset(nullptr);
