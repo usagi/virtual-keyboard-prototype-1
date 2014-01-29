@@ -41,8 +41,11 @@ namespace arisin
       
       using mutate_array_t = std::array<uint8_t, this_size>;
       
-      inline const mutate_array_t& mutate_to_array() const
+      inline const mutate_array_t& mutate_to_const_array() const
       { return *reinterpret_cast<const mutate_array_t*>(this); }
+      
+      inline mutate_array_t& mutate_to_array() const
+      { return *reinterpret_cast<mutate_array_t*>(const_cast<frame_packet_t*>(this)); }
     };
   }
 }

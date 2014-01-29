@@ -70,7 +70,7 @@ namespace arisin
       
       for(const auto& frame_packet : frame_packets)
       {
-        const auto& buffer( frame_packet.mutate_to_array() );
+        const auto& buffer( frame_packet.mutate_to_const_array() );
       
 #ifndef NDEBUG
         auto n =
