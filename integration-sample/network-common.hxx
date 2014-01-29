@@ -36,8 +36,8 @@ namespace arisin
         real_data_size = buffer.size();
       }
       
-      inline uint8_t* data_begin(){ return &data[0]; }
-      inline uint8_t* data_end(){ return data_begin() + size_t(data_size); }
+      inline const uint8_t* data_begin() const { return &data[0]; }
+      inline const uint8_t* data_end() const { return data_begin() + size_t(data_size); }
       
       using mutate_array_t = std::array<uint8_t, this_size>;
       
@@ -46,6 +46,11 @@ namespace arisin
       
       inline mutate_array_t& mutate_to_array() const
       { return *reinterpret_cast<mutate_array_t*>(const_cast<frame_packet_t*>(this)); }
+      
+      using vector_t = std::vector<uint8_t>;
+      
+      inline vector_t to_vector() const
+      { return vector_t(data_begin(), data_end());}
     };
   }
 }
