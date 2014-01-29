@@ -89,6 +89,16 @@ namespace arisin
           run_reciever_p1();
           break;
           
+        case mode_t::dummy_main:
+          DLOG(INFO) << "mode is dummy-main, to run_main";
+          run_dummy_main();
+          break;
+          
+        case mode_t::dummy_reciever:
+          DLOG(INFO) << "mode is dummy-reciever, to run_reciever";
+          run_dummy_reciever();
+          break;
+          
         case mode_t::none:
         default:
           DLOG(INFO) << "mode is none, return";
