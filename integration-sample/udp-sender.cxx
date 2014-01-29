@@ -49,20 +49,37 @@ namespace arisin
     
     void udp_sender_t::operator()(const camera_capture_t::captured_frames_t& captured_frames)
     {
-      LOG(FATAL) << "NOT IMPLEMENTED";
+      frame_packet_t frame_packets[2];
       
-      //DLOG(INFO) << "key_signal code, state: " << key_signal.code_state.code << "," << key_signal.code_state.state;
+      frame_packets[0].capture_id = 0;
+      frame_packets[1].capture_id = 1;
+      frame_packets[0].sequence_id = frame_packets[1].sequence_id = sequence_id;
       
-      //using buffer_t = boost::array<decltype(key_signal.char_array)::value_type, sizeof(key_signal.char_array) / sizeof(decltype(key_signal.char_array)::value_type)>;
-      //const buffer_t& buffer( *reinterpret_cast<const buffer_t*>( key_signal.char_array.data()) );
+      try
+      {
+        frame_packets[0].set_data(captured_frames.top);
+        frame_packets[1].set_data(captured_frames.front);
+      }
+      catch(const std::runtime_error& e)
+      {
+        LOG(WARNING) << "skip frame; frame_packet set exception: " << e.what();
+        return;
+      }
+      
+      ++sequence_id;
+      
+      for(const auto& frame_packet : frame_packets)
+      {
+        const auto& buffer( frame_packet.mutate_to_array() );
       
 #ifndef NDEBUG
-      //auto n =
+        auto n =
 #endif
-      //socket.send_to(boost::asio::buffer(buffer), endpoint);
+        socket.send_to(boost::asio::buffer(buffer), endpoint);
 #ifndef NDEBUG
-      //DLOG(INFO) << "message sent [bytes]: " << n;
+        DLOG(INFO) << "message sent [bytes]: " << n;
 #endif
+      }
     }
     
     const std::string& udp_sender_t::address() const
