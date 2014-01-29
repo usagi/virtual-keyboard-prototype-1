@@ -447,7 +447,25 @@ namespace arisin
     
     void etupirka_t::run_dummy_main()
     {
-      LOG(FATAL) << "NOT IMPLEMENT";
+      DLOG(INFO) << "to initialize";
+      initialize();
+      
+      is_running_ = true;
+      
+      DLOG(INFO) << "run main- mode main loop";
+      
+      std::mt19937 rng;
+      std::uniform_int_distribution<uint32_t> distribution(4, 40);
+      
+      while(is_running_)
+      {
+        adjust_fps([&]()
+        {
+          (*udp_sender)(key_signal_t(distribution(rng), uint8_t(WonderRabbitProject::key::writer_t::state_t::press)));
+        }
+        , main_loop_wait_
+        );
+      }
     }
     
     void etupirka_t::run_dummy_reciever()
