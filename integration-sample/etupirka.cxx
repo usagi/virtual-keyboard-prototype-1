@@ -435,6 +435,16 @@ namespace arisin
       }
     }
     
+    void etupirka_t::run_dummy_main()
+    {
+      LOG(FATAL) << "NOT IMPLEMENT";
+    }
+    
+    void etupirka_t::run_dummy_reciever()
+    {
+      LOG(FATAL) << "NOT IMPLEMENT";
+    }
+    
     void etupirka_t::initialize()
     {
       DLOG(INFO) << "initialize";

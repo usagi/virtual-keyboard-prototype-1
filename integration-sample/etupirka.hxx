@@ -45,6 +45,8 @@ namespace arisin
       void run_reciever();
       void run_main_m1();
       void run_reciever_p1();
+      void run_dummy_main();
+      void run_dummy_reciever();
       
       configuration_t conf_;
       bool is_running_ = false;
